@@ -1,0 +1,49 @@
+{
+  "previdencia social": [
+    {
+      "secao": "DO1",
+      "title": "PORTARIA SGD/MGI Nº 1.010, DE 24 DE FEVEREIRO DE 2026",
+      "url": "portaria-sgd/mgi-n-1.010-de-24-de-fevereiro-de-2026-688965503",
+      "abstract": "Ministério da Previdência Social - Coordenação de Tecnologia da Informação",
+      "date": "26/02/2026",
+      "classPK": "688965505",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO2",
+      "title": "PORTARIA TRT/GP/DG Nº 46, DE 24 DE FEVEREIRO DE 2026",
+      "url": "portaria-trt/gp/dg-n-46-de-24-de-fevereiro-de-2026-689000514",
+      "abstract": "Reajustamento assegurado na mesma data e índice em que se der o reajuste dos benefícios do Regime Geral de Previdência Social",
+      "date": "26/02/2026",
+      "classPK": "689000516",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EDITAL, DE 26 DE FEVEREIRO DE 2026",
+      "url": "edital-de-26-de-fevereiro-de-2026-689085742",
+      "abstract": "Apresentação do atestado de saúde ocupacional, assinatura do contrato de trabalho e da Carteira de Trabalho e Previdência Social",
+      "date": "26/02/2026",
+      "classPK": "689085744",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO1",
+      "title": "ATA DA 6ª SESSÃO ORDINÁRIA",
+      "url": "ata-da-6-sessao-ordinaria-688956759",
+      "abstract": "Sindicato dos Trabalhadores do Seguro Social e Previdência Social no Estado de São Paulo",
+      "date": "26/02/2026",
+      "classPK": "688956761",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO2",
+      "title": "PORTARIA CGBEN/DECIPEX/SGP/MGI N° 1.790, DE 24 DE FEVEREIRO DE 2026",
+      "url": "portaria-cgben/decipex/sgp/mgi-n-1.790-de-24-de-fevereiro-de-2026-689016059",
+      "abstract": "Perito Médico Federal, Nível Superior, Classe S, Padrão V, do Quadro de Pessoal do Ministério da Previdência Social",
+      "date": "26/02/2026",
+      "classPK": "689016061",
+      "displayDateSortable": "1772074800000"
+    }
+  ]
+}

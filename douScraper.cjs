@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const moment = require('moment');
 const { createClient } = require('@supabase/supabase-js');
 
-const SCRAPPING_INTERVAL = 2; // segundos entre chamadas
+const SCRAPPING_INTERVAL = 5; // segundos entre chamadas
 const DEFAULT_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"};
 
 async function getResultsFromDou() {
