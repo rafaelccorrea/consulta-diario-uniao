@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+
 import DashboardLayout from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,18 +12,41 @@ import {
   Loader2,
   Zap,
   TrendingUp,
+  Star,
 } from "lucide-react";
 import { useArticlesStorage } from "@/hooks/useArticlesStorage";
 import { exportToExcel, exportToJSON } from "@/lib/exportToExcel";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { useState, useEffect, useMemo } from "react";
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [section, setSection] = useState("Todas");
   const [isSearching, setIsSearching] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   const scraperMutation = trpc.scraper.runScraper.useMutation();
+
+  // Carregar favoritos do localStorage ao montar
+  useEffect(() => {
+    const stored = localStorage.getItem("legalix_favorites");
+    if (stored) {
+      setFavorites(new Set(JSON.parse(stored)));
+    }
+  }, []);
+
+  // Salvar favoritos no localStorage
+  const toggleFavorite = (classPK: string) => {
+    const newFavorites = new Set(favorites);
+    if (newFavorites.has(classPK)) {
+      newFavorites.delete(classPK);
+    } else {
+      newFavorites.add(classPK);
+    }
+    setFavorites(newFavorites);
+    localStorage.setItem("legalix_favorites", JSON.stringify(Array.from(newFavorites)));
+  };
 
   const {
     articles,
@@ -60,11 +83,23 @@ export default function Dashboard() {
         for (const keyword in results) {
           const items = results[keyword] || [];
           for (const item of items) {
+            // Construir URL completa do DOU
+            let fullUrl = "https://www.in.gov.br";
+            if (item.url) {
+              // Se a URL já é completa, usar como está
+              if (item.url.startsWith("http")) {
+                fullUrl = item.url;
+              } else {
+                // Se é apenas o caminho, adicionar a base
+                fullUrl = `https://www.in.gov.br/${item.url}`;
+              }
+            }
+            
             articlesToAdd.push({
               id: item.classPK || `article-${Date.now()}-${Math.random()}`,
               classPK: item.classPK || "",
               title: item.title || "Sem título",
-              url: item.url || item.urlTitle || "https://www.in.gov.br",
+              url: fullUrl,
               section: item.secao || item.pubName || "Geral",
               date: item.date || item.pubDate || new Date().toISOString().split("T")[0],
               summary: item.abstract || item.content || "",
@@ -269,14 +304,25 @@ export default function Dashboard() {
                         {article.summary}
                       </p>
                     </div>
-                    <a
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-700 flex-shrink-0"
-                    >
-                      <ExternalLink className="w-5 h-5" />
-                    </a>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <button
+                        onClick={() => toggleFavorite(article.classPK)}
+                        className="text-yellow-500 hover:text-yellow-600 transition-colors"
+                      >
+                        <Star
+                          className="w-5 h-5"
+                          fill={favorites.has(article.classPK) ? "currentColor" : "none"}
+                        />
+                      </button>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-700"
+                      >
+                        <ExternalLink className="w-5 h-5" />
+                      </a>
+                    </div>
                   </div>
                 </Card>
               ))}
