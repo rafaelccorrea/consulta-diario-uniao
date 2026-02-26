@@ -16,6 +16,7 @@ import {
 import { useArticlesStorage } from "@/hooks/useArticlesStorage";
 import { exportToExcel, exportToJSON } from "@/lib/exportToExcel";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,27 +45,14 @@ export default function Dashboard() {
     try {
       toast.info("Iniciando busca no DOU com douScraper.js...");
 
-      // Chamar a API real do scraper
-      const response = await fetch("/api/trpc/scraper.runScraper", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          json: {},
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Erro na busca: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Resultado do scraper:", data);
+      // Chamar a API real do scraper usando tRPC
+      const mutation = trpc.scraper.runScraper.useMutation();
+      const result = await mutation.mutateAsync({});
+      console.log("Resultado do scraper:", result);
 
       // Processar resultados do scraper
-      if (data.result?.data?.results) {
-        const results = data.result.data.results;
+      if (result?.results) {
+        const results = result.results;
         const articlesToAdd: any[] = [];
 
         // Iterar sobre as palavras-chave e seus artigos
