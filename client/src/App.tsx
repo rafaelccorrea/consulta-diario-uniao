@@ -10,7 +10,7 @@ import Dashboard from "./pages/Dashboard";
 function Router() {
   return (
     <Switch>
-      <Route path={"/ "} component={Dashboard} />
+      <Route path={"/"} component={Dashboard} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
