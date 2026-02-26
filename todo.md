@@ -1,28 +1,30 @@
-# LEGALIX - Redesign para Dashboard Pessoal
+# LEGALIX - Refatoração para localStorage
 
-## Estrutura
-- [x] Remover página inicial (Home)
-- [x] Redirecionar / para /dashboard
-- [x] Simplificar navegação para uso pessoal
+## Arquitetura
+- [x] Remover banco de dados MySQL
+- [x] Implementar localStorage para armazenar até 10.000 artigos
+- [x] Criar hook customizado para gerenciar dados no localStorage
+- [x] Validar limite de 10.000 artigos
 
-## Dashboard Redesenho
-- [x] Layout moderno e profissional
-- [x] Seção de estatísticas em cards
-- [x] Busca rápida no topo
-- [x] Lista de artigos recentes
-- [x] Filtros visíveis e acessíveis
-- [x] Exportação de dados
+## Funcionalidades
+- [x] Exportar dados para CSV
+- [x] Exportar dados para JSON
+- [x] Botão "Buscar Agora" para executar douScraper.js
+- [ ] Integração com API real do douScraper
+- [x] Atualizar dados em tempo real
 
-## Sidebar
-- [x] Manter apenas páginas essenciais
-- [x] Remover itens desnecessários
-- [x] Otimizar para uma pessoa
+## Interface
+- [x] Adicionar botão "Buscar Agora" no dashboard
+- [x] Mostrar status de busca (carregando, sucesso, erro)
+- [x] Indicador de quantidade de artigos armazenados
+- [x] Botões de exportação funcionais
 
 ## Testes
-- [x] Validar redirecionamento
-- [x] Testar todas as funcionalidades
-- [x] Verificar responsividade
+- [ ] Testar localStorage com 10.000 artigos
+- [ ] Testar exportação para CSV
+- [ ] Testar exportação para JSON
+- [ ] Testar busca em tempo real
 
 ## Deploy
-- [x] Salvar checkpoint final
-- [x] Entregar ao usuário
+- [ ] Salvar checkpoint final
+- [ ] Entregar ao usuário
