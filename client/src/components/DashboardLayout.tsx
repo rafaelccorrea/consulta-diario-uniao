@@ -1,6 +1,6 @@
 import { ReactNode, useState } from "react";
 import { useLocation } from "wouter";
-import { Menu, X, LogOut, Settings } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -85,10 +85,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-gray-800 space-y-2">
-          <button className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
-            <Settings className="w-5 h-5 flex-shrink-0" />
-            {sidebarOpen && <span className="text-sm">Configurações</span>}
-          </button>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
