@@ -83,12 +83,14 @@ export default function Dashboard() {
         for (const keyword in results) {
           const items = results[keyword] || [];
           for (const item of items) {
-            // Construir URL completa do DOU usando classPK
+            // Construir URL completa do DOU - priorizar URL completa se disponível
             let fullUrl = "https://www.in.gov.br";
-            if (item.classPK) {
-              fullUrl = `https://www.in.gov.br/consulta/-/detalhe/${item.classPK}`;
-            } else if (item.url && item.url.startsWith("http")) {
+            if (item.url && item.url.startsWith("http")) {
+              // Se a URL já é completa, usar como está
               fullUrl = item.url;
+            } else if (item.classPK) {
+              // Fallback para classPK
+              fullUrl = `https://www.in.gov.br/consulta/-/detalhe/${item.classPK}`;
             }
             
             articlesToAdd.push({
