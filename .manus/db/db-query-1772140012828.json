@@ -1,0 +1,9 @@
+{
+  "query": "TRUNCATE TABLE articles;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2748Ywm5hr5tUiJ.22134678c09e --database RnF68WjtZQhRSmwfotnFhP --execute TRUNCATE TABLE articles;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 218
+}

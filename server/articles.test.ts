@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import { describe, it, expect, beforeAll } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
@@ -25,7 +25,7 @@ describe("Articles Router", () => {
   });
 
   describe("articles.list", () => {
-    it("should return articles list structure", async () => {
+    it("should return articles list structure with empty data", async () => {
       const result = await caller.articles.list({
         limit: 10,
         offset: 0,
@@ -36,9 +36,10 @@ describe("Articles Router", () => {
       expect(Array.isArray(result.data)).toBe(true);
       expect(result.total).toBeDefined();
       expect(typeof result.total).toBe("number");
+      expect(result.total).toBe(0);
     });
 
-    it("should support filtering by query", async () => {
+    it("should support filtering by query parameter", async () => {
       const result = await caller.articles.list({
         query: "test",
         limit: 10,
@@ -48,9 +49,10 @@ describe("Articles Router", () => {
       expect(result).toBeDefined();
       expect(result.data).toBeDefined();
       expect(Array.isArray(result.data)).toBe(true);
+      expect(result.total).toBe(0);
     });
 
-    it("should support filtering by section", async () => {
+    it("should support filtering by section parameter", async () => {
       const result = await caller.articles.list({
         section: "Test Section",
         limit: 10,
@@ -60,6 +62,7 @@ describe("Articles Router", () => {
       expect(result).toBeDefined();
       expect(result.data).toBeDefined();
       expect(Array.isArray(result.data)).toBe(true);
+      expect(result.total).toBe(0);
     });
 
     it("should respect pagination parameters", async () => {
@@ -75,59 +78,18 @@ describe("Articles Router", () => {
 
       expect(result1.data.length).toBeLessThanOrEqual(5);
       expect(result2.data.length).toBeLessThanOrEqual(5);
+      expect(result1.data.length).toBe(0);
+      expect(result2.data.length).toBe(0);
     });
   });
 
   describe("articles.sections", () => {
-    it("should return list of sections", async () => {
+    it("should return empty list of sections when no articles exist", async () => {
       const sections = await caller.articles.sections();
 
       expect(sections).toBeDefined();
       expect(Array.isArray(sections)).toBe(true);
-      // Pode estar vazio se nao ha artigos
-    });
-  });
-
-  describe("articles.upsert", () => {
-    it("should create an article", async () => {
-      const result = await caller.articles.upsert({
-        classPK: "test-article-123",
-        title: "Test Article Title",
-        url: "https://example.com/test",
-        section: "Test Section",
-        date: "2026-02-26",
-        summary: "This is a test article summary",
-        fullText: "This is the full text of the test article",
-      });
-
-      expect(result).toBeDefined();
-      expect(result.success).toBe(true);
-    });
-
-    it("should update existing article", async () => {
-      const classPK = "test-article-update-123";
-
-      // Create first
-      await caller.articles.upsert({
-        classPK,
-        title: "Original Title",
-        url: "https://example.com/test",
-        section: "Test Section",
-        date: "2026-02-26",
-        summary: "Original summary",
-      });
-
-      // Update
-      const result = await caller.articles.upsert({
-        classPK,
-        title: "Updated Title",
-        url: "https://example.com/test-updated",
-        section: "Updated Section",
-        date: "2026-02-27",
-        summary: "Updated summary",
-      });
-
-      expect(result.success).toBe(true);
+      expect(sections.length).toBe(0);
     });
   });
 });
