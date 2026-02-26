@@ -1,36 +1,28 @@
-# LEGALIX - TODO List
+# LEGALIX - Redesign para Dashboard Pessoal
 
-## Estrutura e Organização
-- [x] Unificar frontend e backend em uma única estrutura de pastas
-- [x] Verificar se servidor está rodando corretamente
+## Estrutura
+- [x] Remover página inicial (Home)
+- [x] Redirecionar / para /dashboard
+- [x] Simplificar navegação para uso pessoal
 
-## Páginas do Drawer
-- [x] Página Dashboard - com dados em tempo real
-- [x] Página Buscar - com paginação funcional
-- [x] Página Favoritos - com adicionar/remover favoritos
-- [x] Página Histórico - com paginação funcional
-- [ ] Página Configurações - com opções do usuário
+## Dashboard Redesenho
+- [x] Layout moderno e profissional
+- [x] Seção de estatísticas em cards
+- [x] Busca rápida no topo
+- [x] Lista de artigos recentes
+- [x] Filtros visíveis e acessíveis
+- [x] Exportação de dados
 
-## Funcionalidades de Paginação
-- [x] Implementar paginação na página Buscar
-- [x] Implementar paginação na página Histórico
-- [x] Implementar paginação na página Favoritos
-- [x] Botões Anterior/Próxima funcionando
-- [x] Indicador de página atual
-
-## Backend - Endpoints Adicionais
-- [x] Endpoint para adicionar artigo aos favoritos
-- [x] Endpoint para remover artigo dos favoritos
-- [ ] Endpoint para listar favoritos com paginação
-- [ ] Endpoint para listar histórico com paginação
-- [ ] Endpoint para salvar histórico de busca
+## Sidebar
+- [x] Manter apenas páginas essenciais
+- [x] Remover itens desnecessários
+- [x] Otimizar para uma pessoa
 
 ## Testes
-- [ ] Testes para endpoints de favoritos
-- [ ] Testes para endpoints de histórico
-- [ ] Testes de paginação
-- [ ] Testes de todas as páginas
+- [x] Validar redirecionamento
+- [x] Testar todas as funcionalidades
+- [x] Verificar responsividade
 
 ## Deploy
-- [ ] Salvar checkpoint final
-- [ ] Entregar ao usuário
+- [x] Salvar checkpoint final
+- [x] Entregar ao usuário

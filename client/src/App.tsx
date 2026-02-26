@@ -11,17 +11,21 @@ import Favorites from "./pages/Favorites";
 import History from "./pages/History";
 
 function Router() {
+  // Redirect root to dashboard
+  if (typeof window !== 'undefined' && window.location.pathname === '/') {
+    window.location.pathname = '/dashboard';
+  }
+
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
       <Route path={"/dashboard"} component={Dashboard} />
       <Route path={"/search"} component={Search} />
       <Route path={"/favorites"} component={Favorites} />
       <Route path={"/history"} component={History} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
-      <Route component={NotFound} />
+      <Route component={Dashboard} />
     </Switch>
   );
 }
