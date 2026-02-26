@@ -23,6 +23,8 @@ export default function Dashboard() {
   const [section, setSection] = useState("Todas");
   const [isSearching, setIsSearching] = useState(false);
 
+  const scraperMutation = trpc.scraper.runScraper.useMutation();
+
   const {
     articles,
     isLoading,
@@ -46,8 +48,7 @@ export default function Dashboard() {
       toast.info("Iniciando busca no DOU com douScraper.js...");
 
       // Chamar a API real do scraper usando tRPC
-      const mutation = trpc.scraper.runScraper.useMutation();
-      const result = await mutation.mutateAsync({});
+      const result = await scraperMutation.mutateAsync({});
       console.log("Resultado do scraper:", result);
 
       // Processar resultados do scraper

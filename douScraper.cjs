@@ -277,8 +277,7 @@ async function processAndUpsert(results) {
     console.log(`\n=== BUSCA CONCLUÍDA ===`);
     console.log(`Total de itens encontrados hoje para 'previdencia social': ${count}`);
     
+    console.log(JSON.stringify(results));
     if (count > 0) {
-        // Descomente a linha abaixo para salvar no Supabase
-        // await processAndUpsert(results);
     }
 })();

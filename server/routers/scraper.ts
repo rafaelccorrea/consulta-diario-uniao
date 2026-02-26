@@ -14,8 +14,8 @@ export const scraperRouter = router({
       try {
         console.log("[SCRAPER] Iniciando busca no DOU...");
 
-        // Caminho para o script douScraper.js
-        const scraperPath = path.join(process.cwd(), "douScraper.js");
+        // Caminho para o script douScraper.cjs
+        const scraperPath = path.join(process.cwd(), "douScraper.cjs");
 
         // Executar o script Node.js
         const output = execSync(`node "${scraperPath}"`, {
