@@ -1,6 +1,9 @@
 import { ReactNode, useState } from "react";
+import { useLocation } from "wouter";
 import { Menu, X, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { getLoginUrl } from "@/const";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -15,6 +18,22 @@ interface DashboardLayoutProps {
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [location, setLocation] = useLocation();
+  const { user, logout } = useAuth();
+
+  const navItems = [
+    { href: "/dashboard", label: "Dashboard", icon: "📊" },
+    { href: "/search", label: "Buscar", icon: "🔍" },
+    { href: "/favorites", label: "Favoritos", icon: "⭐" },
+    { href: "/history", label: "Histórico", icon: "📋" },
+  ];
+
+  const isActive = (href: string) => location === href;
+
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = getLoginUrl();
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -48,34 +67,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-2">
-          <a
-            href="#"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg bg-blue-600 text-white font-medium transition-colors"
-          >
-            <div className="w-5 h-5 flex-shrink-0">📊</div>
-            {sidebarOpen && <span>Dashboard</span>}
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-          >
-            <div className="w-5 h-5 flex-shrink-0">🔍</div>
-            {sidebarOpen && <span>Buscar</span>}
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-          >
-            <div className="w-5 h-5 flex-shrink-0">⭐</div>
-            {sidebarOpen && <span>Favoritos</span>}
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-          >
-            <div className="w-5 h-5 flex-shrink-0">📋</div>
-            {sidebarOpen && <span>Histórico</span>}
-          </a>
+          {navItems.map((item) => (
+            <button
+              key={item.href}
+              onClick={() => setLocation(item.href)}
+              className={`w-full flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+                isActive(item.href)
+                  ? "bg-blue-600 text-white font-medium"
+                  : "text-gray-300 hover:bg-gray-800"
+              }`}
+            >
+              <div className="w-5 h-5 flex-shrink-0">{item.icon}</div>
+              {sidebarOpen && <span>{item.label}</span>}
+            </button>
+          ))}
         </nav>
 
         {/* Footer */}
@@ -84,7 +89,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <Settings className="w-5 h-5 flex-shrink-0" />
             {sidebarOpen && <span className="text-sm">Configurações</span>}
           </button>
-          <button className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
+          >
             <LogOut className="w-5 h-5 flex-shrink-0" />
             {sidebarOpen && <span className="text-sm">Sair</span>}
           </button>
@@ -99,23 +107,27 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <h1 className="text-2xl font-bold text-gray-900">
               Monitoramento DOU
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-600">
               Acompanhe publicações em tempo real
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">Rafael</p>
-              <p className="text-xs text-gray-500">Administrador</p>
+          {user && (
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                <p className="text-xs text-gray-600">{user.email}</p>
+              </div>
+              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                {user.name?.charAt(0).toUpperCase() || "U"}
+              </div>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-              R
-            </div>
-          </div>
+          )}
         </header>
 
         {/* Content */}
-        <main className="flex-1 overflow-auto p-6">{children}</main>
+        <main className="flex-1 overflow-auto">
+          <div className="p-6">{children}</div>
+        </main>
       </div>
     </div>
   );
