@@ -1,3 +1,4 @@
+import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ArticleCard from "@/components/ArticleCard";
@@ -28,6 +29,10 @@ import { useState, useEffect } from "react";
  * - No mock data - ready for API integration
  */
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [currentDate, setCurrentDate] = useState("");
 
