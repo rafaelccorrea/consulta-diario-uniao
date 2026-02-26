@@ -123,10 +123,8 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-              <FileText className="w-6 h-6 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">DOU Insights</h1>
+            <img src="https://private-us-east-1.manuscdn.com/sessionFile/8n3CekvAHkJ3an3EiYMtMw/sandbox/Xx5GyFbOVJpO0AkweAkhEx-img-3_1772136969000_na1fn_bGVnYWxpeC1sb2dvLWljb24.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOG4zQ2VrdkFIa0ozYW4zRWlZTXRNdy9zYW5kYm94L1h4NUd5RmJPVkpwTzBBa3dlQWtoRXgtaW1nLTNfMTc3MjEzNjk2OTAwMF9uYTFmbl9iR1ZuWVd4cGVDMXNiMmR2TFdsamIyNC5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=hV5YOHIrM2KdoJh9S6G8i9tgB2~6Tr7L-NWgAOTEe3uAn7H76w0taJCQ57PLXG4Bmh4FkbOX2UcTcszKdi3XpuT23XBb17DDwZ-kZtRXozF0a9lwiBOIdmuIrqfhXhqIPIzGfAVVmPzGe7svh69PkIwd-zr8V8baEs~1HVzd1XMDyN51nfZ4pltxPCq57W2ZPoOHwEqp99zz4LuYnCVJVrvI4i4tXrE3N--Tzv7hTqagCoNF9YsTNAjbMZATMNUrahajUoqLClsyRdKE~9PHDIsyhaCbwJPZMWskZ3nPH6dYn3La0PKJPAS9tm6RzrSJcCzHgdKiyh-INIboIUwTVw__" alt="LEGALIX" className="w-10 h-10" />
+            <h1 className="text-xl font-bold text-gray-900">LEGALIX</h1>
           </div>
           <nav className="hidden md:flex items-center gap-8">
             <a
@@ -168,11 +166,11 @@ export default function Home() {
         <div className="container mx-auto px-4 relative z-20">
           <div className="max-w-2xl">
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Monitore o DOU com Inteligência
+              Inteligência nos Dados do DOU
             </h2>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Acompanhe publicações do Diário Oficial da União em tempo real.
-              Organize, analise e tome decisões baseadas em dados precisos.
+              Monitore publicações do Diário Oficial da União em tempo real.
+              Organize, analise e tome decisões baseadas em dados precisos com LEGALIX.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
@@ -311,10 +309,8 @@ export default function Home() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-bold text-white">DOU Insights</span>
+                <img src="https://private-us-east-1.manuscdn.com/sessionFile/8n3CekvAHkJ3an3EiYMtMw/sandbox/Xx5GyFbOVJpO0AkweAkhEx-img-3_1772136969000_na1fn_bGVnYWxpeC1sb2dvLWljb24.png?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvOG4zQ2VrdkFIa0ozYW4zRWlZTXRNdy9zYW5kYm94L1h4NUd5RmJPVkpwTzBBa3dlQWtoRXgtaW1nLTNfMTc3MjEzNjk2OTAwMF9uYTFmbl9iR1ZuWVd4cGVDMXNiMmR2TFdsamIyNC5wbmc~eC1vc3MtcHJvY2Vzcz1pbWFnZS9yZXNpemUsd18xOTIwLGhfMTkyMC9mb3JtYXQsd2VicC9xdWFsaXR5LHFfODAiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE3OTg3NjE2MDB9fX1dfQ__&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=hV5YOHIrM2KdoJh9S6G8i9tgB2~6Tr7L-NWgAOTEe3uAn7H76w0taJCQ57PLXG4Bmh4FkbOX2UcTcszKdi3XpuT23XBb17DDwZ-kZtRXozF0a9lwiBOIdmuIrqfhXhqIPIzGfAVVmPzGe7svh69PkIwd-zr8V8baEs~1HVzd1XMDyN51nfZ4pltxPCq57W2ZPoOHwEqp99zz4LuYnCVJVrvI4i4tXrE3N--Tzv7hTqagCoNF9YsTNAjbMZATMNUrahajUoqLClsyRdKE~9PHDIsyhaCbwJPZMWskZ3nPH6dYn3La0PKJPAS9tm6RzrSJcCzHgdKiyh-INIboIUwTVw__" alt="LEGALIX" className="w-8 h-8" />
+                <span className="font-bold text-white">LEGALIX</span>
               </div>
               <p className="text-sm">
                 Monitoramento inteligente do Diário Oficial da União
@@ -389,7 +385,7 @@ export default function Home() {
           <div className="border-t border-gray-800 pt-8">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <p className="text-sm">
-                © 2024 DOU Insights. Todos os direitos reservados.
+                © 2024 LEGALIX. Todos os direitos reservados.
               </p>
               <div className="flex gap-6 mt-4 md:mt-0 text-sm">
                 <a href="#" className="hover:text-white transition-colors">
