@@ -42,30 +42,61 @@ export default function Dashboard() {
   const handleSearch = async () => {
     setIsSearching(true);
     try {
-      // Simular busca com douScraper.js
-      // Em produção, isso chamaria sua API real
-      toast.info("Iniciando busca no DOU...");
+      toast.info("Iniciando busca no DOU com douScraper.js...");
 
-      // Exemplo de dados que viriam do douScraper
-      const mockArticles = [
-        {
-          id: `article-${Date.now()}`,
-          classPK: `pk-${Date.now()}`,
-          title: "Artigo do DOU",
-          url: "https://www.in.gov.br",
-          section: "Seção 1",
-          date: new Date().toISOString().split("T")[0],
-          summary: "Resumo do artigo",
-          fullText: "Texto completo",
-          fetchedAt: new Date().toISOString(),
+      // Chamar a API real do scraper
+      const response = await fetch("/api/trpc/scraper.runScraper", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ];
+        body: JSON.stringify({
+          json: {},
+        }),
+      });
 
-      upsertArticles(mockArticles);
-      toast.success("Busca concluída com sucesso!");
+      if (!response.ok) {
+        throw new Error(`Erro na busca: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("Resultado do scraper:", data);
+
+      // Processar resultados do scraper
+      if (data.result?.data?.results) {
+        const results = data.result.data.results;
+        const articlesToAdd: any[] = [];
+
+        // Iterar sobre as palavras-chave e seus artigos
+        for (const keyword in results) {
+          const items = results[keyword] || [];
+          for (const item of items) {
+            articlesToAdd.push({
+              id: item.classPK || `article-${Date.now()}-${Math.random()}`,
+              classPK: item.classPK || "",
+              title: item.title || "Sem título",
+              url: item.url || item.urlTitle || "https://www.in.gov.br",
+              section: item.secao || item.pubName || "Geral",
+              date: item.date || item.pubDate || new Date().toISOString().split("T")[0],
+              summary: item.abstract || item.content || "",
+              fullText: item.abstract || item.content || "",
+              fetchedAt: new Date().toISOString(),
+            });
+          }
+        }
+
+        if (articlesToAdd.length > 0) {
+          upsertArticles(articlesToAdd);
+          toast.success(`${articlesToAdd.length} artigos encontrados e salvos!`);
+        } else {
+          toast.info("Nenhum artigo encontrado na busca.");
+        }
+      } else {
+        toast.warning("Busca concluída, mas nenhum resultado foi processado.");
+      }
     } catch (error) {
       console.error("Erro na busca:", error);
-      toast.error("Erro ao buscar artigos");
+      toast.error(error instanceof Error ? error.message : "Erro ao buscar artigos");
     } finally {
       setIsSearching(false);
     }
