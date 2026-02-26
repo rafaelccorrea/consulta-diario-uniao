@@ -15,6 +15,13 @@ export interface Article {
 const STORAGE_KEY = "legalix_articles";
 const MAX_ARTICLES = 10000;
 
+// Construir URL completa do DOU
+function buildFullUrl(urlPart: string, classPK: string): string {
+  if (urlPart && urlPart.startsWith("http")) return urlPart;
+  if (classPK) return `https://www.in.gov.br/consulta/-/detalhe/${classPK}`;
+  return "https://www.in.gov.br";
+}
+
 export function useArticlesStorage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -56,7 +63,9 @@ export function useArticlesStorage() {
 
       // Atualizar ou adicionar novos artigos
       newArticles.forEach((article) => {
-        existingMap.set(article.classPK, article);
+        // Construir URL completa se necessário
+        const fullUrl = buildFullUrl(article.url, article.classPK);
+        existingMap.set(article.classPK, { ...article, url: fullUrl });
       });
 
       // Converter para array e ordenar por data (mais recentes primeiro)

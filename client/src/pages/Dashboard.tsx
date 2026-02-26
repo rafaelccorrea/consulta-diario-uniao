@@ -268,10 +268,6 @@ export default function Dashboard() {
                       <p className="text-sm text-gray-600 mt-1 line-clamp-2">
                         {article.summary}
                       </p>
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                        <span>📅 {article.date}</span>
-                        <span>📋 {article.section}</span>
-                      </div>
                     </div>
                     <a
                       href={article.url}
