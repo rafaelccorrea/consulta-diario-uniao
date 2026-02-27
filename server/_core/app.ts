@@ -29,8 +29,9 @@ export function createApp(): Express {
   );
 
   if (process.env.VERCEL === "1") {
-    // Vercel: static files come from public/ (CDN). Only SPA fallback for non-API routes.
+    // Vercel: serve static files from public/ first, then SPA fallback for any other GET.
     const publicDir = path.resolve(process.cwd(), "public");
+    app.use(express.static(publicDir));
     app.get("*", (_req, res) => {
       res.sendFile(path.join(publicDir, "index.html"));
     });
