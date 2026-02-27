@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,36 +10,30 @@ import {
   ChevronRight,
   Download,
 } from "lucide-react";
-import { trpc } from "@/lib/trpc";
+import { useArticlesStorage } from "@/hooks/useArticlesStorage";
+import { useFavoritesStorage } from "@/hooks/useFavoritesStorage";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function Favorites() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [favorites, setFavorites] = useState<any[]>([]);
+  const { articles } = useArticlesStorage();
+  const { favorites, removeFavorite } = useFavoritesStorage();
+
+  // Filtrar artigos que estão nos favoritos
+  const favoriteArticles = useMemo(() => {
+    return articles.filter((article) => favorites.includes(article.id));
+  }, [articles, favorites]);
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-  const totalPages = Math.ceil(favorites.length / ITEMS_PER_PAGE);
-  const paginatedFavorites = favorites.slice(
+  const totalPages = Math.ceil(favoriteArticles.length / ITEMS_PER_PAGE);
+  const paginatedFavorites = favoriteArticles.slice(
     offset,
     offset + ITEMS_PER_PAGE
   );
 
-  // Fetch all articles to show as favorites (for demo)
-  const articlesQuery = trpc.articles.list.useQuery({
-    limit: 100,
-    offset: 0,
-  });
-
-  // Initialize favorites from articles (demo mode)
-  useState(() => {
-    if (articlesQuery.data?.data) {
-      setFavorites(articlesQuery.data.data.slice(0, 5)); // Demo: first 5 as favorites
-    }
-  });
-
-  const handleRemoveFavorite = (articleId: number) => {
-    setFavorites(favorites.filter((f) => f.id !== articleId));
+  const handleRemoveFavorite = (articleId: string) => {
+    removeFavorite(articleId);
     if (paginatedFavorites.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -93,7 +87,7 @@ export default function Favorites() {
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Favoritos</h2>
             <p className="text-gray-600">
-              Total de {favorites.length} artigo(s) favorito(s)
+              Total de {favoriteArticles.length} artigo(s) favorito(s)
             </p>
           </div>
           <div className="flex gap-2">
@@ -101,7 +95,7 @@ export default function Favorites() {
               onClick={() => handleExport("csv")}
               variant="outline"
               className="border-gray-300 text-gray-700"
-              disabled={favorites.length === 0}
+              disabled={favoriteArticles.length === 0}
             >
               <Download className="w-4 h-4 mr-2" />
               CSV
@@ -110,7 +104,7 @@ export default function Favorites() {
               onClick={() => handleExport("json")}
               variant="outline"
               className="border-gray-300 text-gray-700"
-              disabled={favorites.length === 0}
+              disabled={favoriteArticles.length === 0}
             >
               <Download className="w-4 h-4 mr-2" />
               JSON
@@ -119,12 +113,12 @@ export default function Favorites() {
         </div>
 
         {/* ===== FAVORITES LIST ===== */}
-        {favorites.length > 0 ? (
+        {favoriteArticles.length > 0 ? (
           <div className="space-y-3">
             {paginatedFavorites.map((article) => (
               <Card
                 key={article.id}
-                className="p-4 hover:shadow-md transition-shadow"
+                className="p-4 hover:shadow-md transition-shadow border-l-4 border-l-blue-600"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">

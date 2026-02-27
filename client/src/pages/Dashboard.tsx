@@ -15,6 +15,7 @@ import {
   Star,
 } from "lucide-react";
 import { useArticlesStorage } from "@/hooks/useArticlesStorage";
+import { useFavoritesStorage } from "@/hooks/useFavoritesStorage";
 import { exportToExcel, exportToJSON } from "@/lib/exportToExcel";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -24,28 +25,17 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [section, setSection] = useState("Todas");
   const [isSearching, setIsSearching] = useState(false);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
+  const { addFavorite, removeFavorite, isFavorite } = useFavoritesStorage();
   const scraperMutation = trpc.scraper.runScraper.useMutation();
 
-  // Carregar favoritos do localStorage ao montar
-  useEffect(() => {
-    const stored = localStorage.getItem("legalix_favorites");
-    if (stored) {
-      setFavorites(new Set(JSON.parse(stored)));
-    }
-  }, []);
-
-  // Salvar favoritos no localStorage
-  const toggleFavorite = (classPK: string) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(classPK)) {
-      newFavorites.delete(classPK);
+  // Toggle favorito
+  const toggleFavorite = (articleId: string) => {
+    if (isFavorite(articleId)) {
+      removeFavorite(articleId);
     } else {
-      newFavorites.add(classPK);
+      addFavorite(articleId);
     }
-    setFavorites(newFavorites);
-    localStorage.setItem("legalix_favorites", JSON.stringify(Array.from(newFavorites)));
   };
 
   const {
@@ -307,22 +297,27 @@ export default function Dashboard() {
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
                       <button
-                        onClick={() => toggleFavorite(article.classPK)}
-                        className="text-yellow-500 hover:text-yellow-600 transition-colors"
+                        onClick={() => toggleFavorite(article.id)}
+                        className="p-2 hover:bg-yellow-100 rounded transition-colors"
                       >
                         <Star
-                          className="w-5 h-5"
-                          fill={favorites.has(article.classPK) ? "currentColor" : "none"}
+                          className={`w-5 h-5 ${
+                            isFavorite(article.id)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-400"
+                          }`}
                         />
                       </button>
-                      <a
-                        href={article.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-700"
-                      >
-                        <ExternalLink className="w-5 h-5" />
-                      </a>
+                      {article.url && (
+                        <a
+                          href={article.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 hover:bg-gray-100 rounded transition-colors"
+                        >
+                          <ExternalLink className="w-5 h-5 text-blue-600" />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </Card>
