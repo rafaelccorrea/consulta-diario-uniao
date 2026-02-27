@@ -25,6 +25,9 @@
 - [x] Adicionar suporte ao padrão /web/dou/-/{slug}
 - [x] Criar testes unitários para validação de URLs
 - [x] Todos os testes passando (28 testes)
+- [x] **NOVO**: Atualizar douScraper para entrar em cada artigo e extrair URL completa
+- [x] **NOVO**: Retornar URL completa no response do scraper
+- [x] **NOVO**: Simplificar lógica de construção de URLs no frontend
 
 ## Testes
 - [x] Testar construção de URLs do DOU

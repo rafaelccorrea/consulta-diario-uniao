@@ -29,6 +29,37 @@ async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
     }
 }
 
+// Função para extrair a URL completa de um artigo
+async function extractFullUrlFromArticle(classPK) {
+    try {
+        // Tentar URL com classPK
+        const detailUrl = `https://www.in.gov.br/consulta/-/detalhe/${classPK}`;
+        const response = await fetchWithRetry(
+            detailUrl,
+            { method: 'GET', headers: DEFAULT_HEADERS }
+        );
+        
+        if (response.ok) {
+            const html = await response.text();
+            // Procurar pela URL real da página no HTML
+            // A URL geralmente está em um atributo og:url ou no href do link de compartilhamento
+            const ogUrlMatch = html.match(/property="og:url"\s+content="([^"]+)"/);
+            if (ogUrlMatch && ogUrlMatch[1]) {
+                return ogUrlMatch[1];
+            }
+            
+            // Fallback: procurar por padrão de URL no HTML
+            const urlMatch = html.match(/https:\/\/www\.in\.gov\.br\/web\/dou\/-\/[^\s"<>]+/);
+            if (urlMatch) {
+                return urlMatch[0];
+            }
+        }
+    } catch (e) {
+        console.log(`[AVISO] Não foi possível extrair URL completa para classPK ${classPK}: ${e.message}`);
+    }
+    return null;
+}
+
 async function getResultsFromDou() {
     const keywords = [
         "previdencia social",
@@ -84,10 +115,20 @@ async function getResultsFromDou() {
                 const searchResults = data.jsonArray || [];
                 if (searchResults.length) {
                     for (const content of searchResults) {
+                        // Tentar extrair URL completa
+                        let fullUrl = content.urlTitle;
+                        if (!fullUrl || !fullUrl.includes('www.in.gov.br')) {
+                            // Se não tiver URL completa, tentar extrair da página de detalhe
+                            const extractedUrl = await extractFullUrlFromArticle(content.classPK);
+                            if (extractedUrl) {
+                                fullUrl = extractedUrl;
+                            }
+                        }
+                        
                         const item = {
                             secao: content.pubName || content.secao,
                             title: content.title,
-                            url: content.urlTitle,
+                            url: fullUrl || content.urlTitle,
                             abstract: content.content,
                             date: content.pubDate,
                             classPK: content.classPK,
@@ -150,10 +191,20 @@ async function getResultsFromDou() {
                 }
 
                 for (const content of searchResults) {
+                    // Tentar extrair URL completa
+                    let fullUrl = content.urlTitle;
+                    if (!fullUrl || !fullUrl.includes('www.in.gov.br')) {
+                        // Se não tiver URL completa, tentar extrair da página de detalhe
+                        const extractedUrl = await extractFullUrlFromArticle(content.classPK);
+                        if (extractedUrl) {
+                            fullUrl = extractedUrl;
+                        }
+                    }
+                    
                     const item = {
                         secao: content.pubName || content.secao,
                         title: content.title,
-                        url: content.urlTitle,
+                        url: fullUrl || content.urlTitle,
                         abstract: content.content,
                         date: content.pubDate,
                         classPK: content.classPK,

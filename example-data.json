@@ -1,48 +1,129 @@
 {
   "previdencia social": [
     {
-      "secao": "DO1",
-      "title": "PORTARIA Nº 1.010, DE 24 DE FEVEREIRO DE 2026",
-      "url": "https://www.in.gov.br/web/dou/-/portaria-n-1.010-de-24-de-fevereiro-de-2026-688965503",
-      "abstract": "Ministério da Previdência Social - Coordenação de Tecnologia da Informação",
+      "secao": "DO3",
+      "title": "Extrato de Apostilamento 01/2026 - UASG 510178",
+      "url": "https://www.in.gov.br/web/dou/-/extrato-de-apostilamento-01/2026-uasg-510178-689074720",
+      "abstract": "OBJETO: Fornecimento de água e coleta de esgotos para a agência da Previdência Social de Pereira Barreto de Apostilamento 01/2026 - UASG 510178 PROCESSO: 35014.253986/2023-49. Contrato 40/2025. INEXIGIBILIDADE 353/2024. CONTRATANTE: SUPERINTENDÊNCIA REGIONAL SUDESTE I.",
       "date": "26/02/2026",
-      "classPK": "688965505",
+      "classPK": "689074747",
       "displayDateSortable": "1772074800000"
     },
     {
       "secao": "DO2",
       "title": "PORTARIA TRT/GP/DG Nº 46, DE 24 DE FEVEREIRO DE 2026",
       "url": "https://www.in.gov.br/web/dou/-/portaria-trt/gp/dg-n-46-de-24-de-fevereiro-de-2026-689000514",
-      "abstract": "Reajustamento assegurado na mesma data e índice em que se der o reajuste dos benefícios do Regime Geral de Previdência Social",
+      "abstract": "reajustamento assegurado na mesma data e índice em que se der o reajuste dos benefícios do Regime Geral de Previdência Social, com fundamento no Art. 40, §7º da CF, combinado com o Art. 23 da Emenda Constitucional nº 103 da Emenda Constitucional nº 103/2019",
       "date": "26/02/2026",
       "classPK": "689000516",
-      "displayDateSortable": "1772074800000"
-    },
-    {
-      "secao": "DO3",
-      "title": "EDITAL, DE 26 DE FEVEREIRO DE 2026",
-      "url": "https://www.in.gov.br/web/dou/-/edital-de-26-de-fevereiro-de-2026-689085742",
-      "abstract": "Apresentação do atestado de saúde ocupacional, assinatura do contrato de trabalho e da Carteira de Trabalho e Previdência Social",
-      "date": "26/02/2026",
-      "classPK": "689085744",
-      "displayDateSortable": "1772074800000"
-    },
-    {
-      "secao": "DO1",
-      "title": "ATA DA 6ª SESSÃO ORDINÁRIA",
-      "url": "https://www.in.gov.br/web/dou/-/ata-da-6-sessao-ordinaria-688956759",
-      "abstract": "Sindicato dos Trabalhadores do Seguro Social e Previdência Social no Estado de São Paulo",
-      "date": "26/02/2026",
-      "classPK": "688956761",
       "displayDateSortable": "1772074800000"
     },
     {
       "secao": "DO2",
       "title": "PORTARIA CGBEN/DECIPEX/SGP/MGI N° 1.790, DE 24 DE FEVEREIRO DE 2026",
       "url": "https://www.in.gov.br/web/dou/-/portaria-cgben/decipex/sgp/mgi-n-1.790-de-24-de-fevereiro-de-2026-689016059",
-      "abstract": "Perito Médico Federal, Nível Superior, Classe S, Padrão V, do Quadro de Pessoal do Ministério da Previdência Social",
+      "abstract": "Perito Médico Federal, Nível Superior, Classe S, Padrão V, do Quadro de Pessoal do Ministério da Previdência Social, com fundamento no art. 20, incisos I a IV, e §§ 2º e 3º, inciso I, e art. 4º, § 8º, da EC nº",
       "date": "26/02/2026",
       "classPK": "689016061",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO2",
+      "title": "Portaria de Pessoal DGP/SSC/MGI Nº 1.826, DE 25 DE fevereiro DE 2026",
+      "url": "https://www.in.gov.br/web/dou/-/portaria-de-pessoal-dgp/ssc/mgi-n-1.826-de-25-de-fevereiro-de-2026-689010869",
+      "abstract": "de Perito Médico Federal, código 813.001, Classe B, Padrão I, do quadro de pessoal do Ministério da Previdência Social, com fundamento no art. 34, da Lei nº 8.112, de 11 de dezembro de 1990",
+      "date": "26/02/2026",
+      "classPK": "689010871",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EXTRATO DE CONTRATO Nº 3/2026 - UASG 512006",
+      "url": "https://www.in.gov.br/web/dou/-/extrato-de-contrato-n-3/2026-uasg-512006-689212331",
+      "abstract": "despesas decorrentes, com o objetivo de atender ao programa de atendimento itinerante terrestre da previdência social - prevmóvel, a serem executados com regime de dedicação exclusiva de mão de obra",
+      "date": "26/02/2026",
+      "classPK": "689212333",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EXTRATO DE CONTRATO Nº 6/2026 - UASG 512006",
+      "url": "https://www.in.gov.br/web/dou/-/extrato-de-contrato-n-6/2026-uasg-512006-689074850",
+      "abstract": "despesas decorrentes, com o objetivo de atender ao programa de atendimento itinerante terrestre da previdência social - prevmóvel, a serem executados com regime de dedicação exclusiva de mão de obra",
+      "date": "26/02/2026",
+      "classPK": "689074852",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EXTRATO DE CONTRATO Nº 2/2026 - UASG 512006",
+      "url": "https://www.in.gov.br/web/dou/-/extrato-de-contrato-n-2/2026-uasg-512006-689110125",
+      "abstract": "despesas decorrentes, com o objetivo de atender ao programa de atendimento itinerante terrestre da previdência social - prevmóvel, a serem executados com regime de dedicação exclusiva de mão de obra",
+      "date": "26/02/2026",
+      "classPK": "689110127",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EXTRATO DE CONTRATO Nº 4/2026 - UASG 512006",
+      "url": "https://www.in.gov.br/web/dou/-/extrato-de-contrato-n-4/2026-uasg-512006-689036688",
+      "abstract": "despesas decorrentes, com o objetivo de atender ao programa de atendimento itinerante terrestre da previdência social - prevmóvel, a serem executados com regime de dedicação exclusiva de mão de obra",
+      "date": "26/02/2026",
+      "classPK": "689036690",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EXTRATO DE CONTRATO Nº 5/2026 - UASG 512006",
+      "url": "https://www.in.gov.br/web/dou/-/extrato-de-contrato-n-5/2026-uasg-512006-689122103",
+      "abstract": "despesas decorrentes, com o objetivo de atender ao programa de atendimento itinerante terrestre da previdência social - prevmóvel, a serem executados com regime de dedicação exclusiva de mão de obra",
+      "date": "26/02/2026",
+      "classPK": "689122105",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO2",
+      "title": "Portaria de Pessoal DGP/SSC/MGI Nº 1.824, DE 25 DE fevereiro DE 2026",
+      "url": "https://www.in.gov.br/web/dou/-/portaria-de-pessoal-dgp/ssc/mgi-n-1.824-de-25-de-fevereiro-de-2026-688992406",
+      "abstract": "de Perito Médico Federal, código 813.001, Classe B, Padrão I, do quadro de pessoal do Ministério da Previdência Social, com fundamento no art. 34, da Lei nº 8.112, de 11 de dezembro de 1990",
+      "date": "26/02/2026",
+      "classPK": "688992408",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "aviso DE ADJUDICAÇÃO E HOMOLOGAÇÃO",
+      "url": "https://www.in.gov.br/web/dou/-/aviso-de-adjudicacao-e-homologacao-689104995",
+      "abstract": "DE EMPRESA PARA AQUISIÇÃO DE LICENÇA DE USO DO SOFTWARE - SISTEMA GERENCIADOR DE REGIMES PRÓPRIOS DE PREVIDÊNCIA SOCIAL COM PRESTAÇÃO DE SERVIÇOS ENVOLVENDO A MANUTENÇÃO, TREINAMENTO, ATUALIZAÇÕES, SUPORTE E SERVIÇOS",
+      "date": "26/02/2026",
+      "classPK": "689104997",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO2",
+      "title": "PORTARIA SG/MPF Nº 175, DE 20 DE FEVEREIRO DE 2026",
+      "url": "https://www.in.gov.br/web/dou/-/portaria-sg/mpf-n-175-de-20-de-fevereiro-de-2026-689017983",
+      "abstract": "revisão dos proventos na mesma data e índice em que se der o reajuste dos benefícios do Regime Geral de Previdência Social, nos termos do artigo 15 da Lei nº 10.887, de 18 de junho de 2004",
+      "date": "26/02/2026",
+      "classPK": "689017985",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO2",
+      "title": "PORTARIA DCOMB-RPPU/INSS Nº 113, DE 25 DE FEVEREIRO DE 2026",
+      "url": "https://www.in.gov.br/web/dou/-/portaria-dcomb-rppu/inss-n-113-de-25-de-fevereiro-de-2026-688986742",
+      "abstract": "vinculada à Coordenação de Atendimento do RPPU, da Coordenação-Geral de Centralização do Regime Próprio de Previdência Social da União, da Diretoria de Gestão de Pessoas do INSS",
+      "date": "26/02/2026",
+      "classPK": "688986744",
+      "displayDateSortable": "1772074800000"
+    },
+    {
+      "secao": "DO3",
+      "title": "EDITAL, DE 26 DE FEVEREIRO DE 2026",
+      "url": "https://www.in.gov.br/web/dou/-/edital-de-26-de-fevereiro-de-2026-689085742",
+      "abstract": "apresentação do atestado de saúde ocupacional, assinatura do contrato de trabalho e da Carteira de Trabalho e Previdência Social, e demais atividades de nomeação",
+      "date": "26/02/2026",
+      "classPK": "689085744",
       "displayDateSortable": "1772074800000"
     }
   ]
