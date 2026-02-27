@@ -18,6 +18,7 @@ const MAX_ARTICLES = 10000;
 // Construir URL completa do DOU
 function buildFullUrl(urlPart: string, classPK: string): string {
   if (urlPart && urlPart.startsWith("http")) return urlPart;
+  if (urlPart) return `https://www.in.gov.br/${urlPart}`;
   if (classPK) return `https://www.in.gov.br/consulta/-/detalhe/${classPK}`;
   return "https://www.in.gov.br";
 }
