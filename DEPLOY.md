@@ -80,7 +80,7 @@ O deploy usa **front estático + API** na Vercel:
 Significa que ainda não existe nenhum deploy concluído. Faça o seguinte:
 
 1. **Disparar o primeiro deploy:** no projeto na Vercel, abra a aba "Deployments" e clique em **"Deploy"** (ou "Redeploy" se já tiver tentado antes). Ou faça um **push** no branch conectado (ex.: `main`) para disparar o build automaticamente.
-2. **Root Directory:** em Settings > General, confira se "Root Directory" está vazio. Se estiver preenchido com uma pasta (ex.: `client`), apague e salve — o `package.json` e o `server.ts` precisam estar na raiz que a Vercel usa.
+2. **Root Directory:** em Settings > General, confira se "Root Directory" está vazio. Se estiver preenchido com uma pasta (ex.: `client`), apague e salve — o `package.json` e a pasta `api/` precisam estar na raiz que a Vercel usa.
 3. **Build Command:** em Settings > General, deve estar `pnpm build` (ou em branco para usar o do `vercel.json`).
 4. Depois do deploy, use a URL **do projeto** (ex.: `https://seu-projeto.vercel.app`), não a URL de um deployment específico.
 
