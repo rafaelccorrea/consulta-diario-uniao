@@ -5,6 +5,29 @@ const { createClient } = require('@supabase/supabase-js');
 
 const SCRAPPING_INTERVAL = 5; // segundos entre chamadas
 const DEFAULT_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"};
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000; // 2 segundos
+
+// Função com retry automático
+async function fetchWithRetry(url, options = {}, retries = MAX_RETRIES) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.ok) return response;
+            if (i < retries - 1) {
+                console.log(`[RETRY] Tentativa ${i + 1}/${retries} falhou, aguardando ${RETRY_DELAY}ms...`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+            }
+        } catch (error) {
+            if (i < retries - 1) {
+                console.log(`[RETRY] Erro: ${error.message}. Tentativa ${i + 1}/${retries}, aguardando ${RETRY_DELAY}ms...`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+            } else {
+                throw error;
+            }
+        }
+    }
+}
 
 async function getResultsFromDou() {
     const keywords = [
@@ -32,7 +55,7 @@ async function getResultsFromDou() {
             Object.keys(payload).forEach(key => url.searchParams.append(key, payload[key]));
             
             console.log(`[INFO] Buscando keyword: '${keyword}' para o dia de hoje...`);
-            const initialPageResponse = await fetch(
+            const initialPageResponse = await fetchWithRetry(
                 url.toString(),
                 { method: 'GET', headers: DEFAULT_HEADERS }
             );
