@@ -19,12 +19,20 @@
 - [x] Indicador de quantidade de artigos armazenados
 - [x] Botões de exportação funcionais
 
+## Correção de URLs
+- [x] Atualizar função buildFullUrl no douScraper.cjs
+- [x] Atualizar função buildFullUrl no useArticlesStorage.ts
+- [x] Adicionar suporte ao padrão /web/dou/-/{slug}
+- [x] Criar testes unitários para validação de URLs
+- [x] Todos os testes passando (28 testes)
+
 ## Testes
-- [ ] Testar localStorage com 10.000 artigos
-- [ ] Testar exportação para CSV
-- [ ] Testar exportação para JSON
-- [ ] Testar busca em tempo real
+- [x] Testar construção de URLs do DOU
+- [x] Testar localStorage com 10.000 artigos
+- [x] Testar exportação para CSV
+- [x] Testar exportação para JSON
+- [x] Testar busca em tempo real
 
 ## Deploy
-- [ ] Salvar checkpoint final
+- [ ] Salvar checkpoint final com correção de URLs
 - [ ] Entregar ao usuário

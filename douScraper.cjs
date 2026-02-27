@@ -259,7 +259,9 @@ function buildFullUrl(urlPart, classpk = null) {
     if (!urlPart && classpk) return `https://www.in.gov.br/consulta/-/detalhe/${classpk}`;
     const up = urlPart.trim();
     if (up.startsWith("http")) return up;
+    if (up.startsWith("/web/dou/-/")) return "https://www.in.gov.br" + up;
     if (up.startsWith("/")) return "https://www.in.gov.br" + up;
+    if (up.startsWith("web/dou/-/")) return "https://www.in.gov.br/" + up;
     if (up.startsWith("web/") || up.startsWith("consulta/")) return "https://www.in.gov.br/" + up;
     if (up.includes("-") && !isNaN(up.slice(-1))) return `https://www.in.gov.br/web/dou/-/${up}`;
     return classpk ? `https://www.in.gov.br/consulta/-/detalhe/${classpk}` : "https://www.in.gov.br";

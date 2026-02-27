@@ -17,11 +17,15 @@ const MAX_ARTICLES = 10000;
 
 // Construir URL completa do DOU
 function buildFullUrl(urlPart: string, classPK: string): string {
-  // Prioridade: URL completa (começa com http) > URL relativa > classPK
-  if (urlPart && urlPart.startsWith("http")) return urlPart;
-  if (urlPart && !urlPart.startsWith("http")) return `https://www.in.gov.br/${urlPart}`;
-  if (classPK) return `https://www.in.gov.br/consulta/-/detalhe/${classPK}`;
-  return "https://www.in.gov.br";
+  if (!urlPart && classPK) return `https://www.in.gov.br/consulta/-/detalhe/${classPK}`;
+  const up = urlPart?.trim() || "";
+  if (up.startsWith("http")) return up;
+  if (up.startsWith("/web/dou/-/")) return "https://www.in.gov.br" + up;
+  if (up.startsWith("/")) return "https://www.in.gov.br" + up;
+  if (up.startsWith("web/dou/-/")) return "https://www.in.gov.br/" + up;
+  if (up.startsWith("web/") || up.startsWith("consulta/")) return "https://www.in.gov.br/" + up;
+  if (up.includes("-") && !isNaN(parseInt(up.slice(-1)))) return `https://www.in.gov.br/web/dou/-/${up}`;
+  return classPK ? `https://www.in.gov.br/consulta/-/detalhe/${classPK}` : "https://www.in.gov.br";
 }
 
 export function useArticlesStorage() {
