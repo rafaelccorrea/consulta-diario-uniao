@@ -1,8 +1,5 @@
 import "dotenv/config";
 import express, { type Express } from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
@@ -31,16 +28,7 @@ export function createApp(): Express {
   );
 
   if (process.env.VERCEL === "1") {
-    // Vercel: serve static from public/. Try path relative to this file, then cwd.
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    let publicDir = path.resolve(__dirname, "..", "..", "public");
-    if (!fs.existsSync(publicDir)) {
-      publicDir = path.resolve(process.cwd(), "public");
-    }
-    app.use(express.static(publicDir));
-    app.get("*", (_req, res) => {
-      res.sendFile(path.join(publicDir, "index.html"));
-    });
+    // Vercel: only API routes here. Frontend (/) is served from public/ via vercel.json outputDirectory.
   } else if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   }

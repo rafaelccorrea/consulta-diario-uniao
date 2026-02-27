@@ -64,7 +64,9 @@ O projeto já possui `vercel.json` configurado com:
 - Build Command: `pnpm build` (gera o client em `public/` e o server em `dist/`)
 - Install Command: `pnpm install`
 
-O deploy usa o suporte **Express na Vercel** (zero-config): o arquivo `server.ts` na raiz exporta o app Express, e a Vercel o executa como serverless function. Os arquivos estáticos (SPA) ficam em `public/` e são servidos pelo CDN.
+O deploy usa **front estático + API** na Vercel:
+- **Frontend (SPA):** build do Vite em `public/` é servido como site estático (`outputDirectory: "public"`). Rotas como `/` e `/dashboard` recebem `index.html` (rewrite para SPA).
+- **Backend (Express):** apenas rotas `/api/*` (tRPC, OAuth) são tratadas pelo Express em `api/index.ts` (serverless function).
 
 ### 4. Deploy
 
