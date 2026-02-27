@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useArticlesStorage } from "@/hooks/useArticlesStorage";
 import { useFavoritesStorage } from "@/hooks/useFavoritesStorage";
+import { useHistoryStorage } from "@/hooks/useHistoryStorage";
 import { exportToExcel, exportToJSON } from "@/lib/exportToExcel";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
@@ -27,6 +28,7 @@ export default function Dashboard() {
   const [isSearching, setIsSearching] = useState(false);
 
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStorage();
+  const { addToHistory } = useHistoryStorage();
   const scraperMutation = trpc.scraper.runScraper.useMutation();
 
   // Toggle favorito
@@ -314,6 +316,7 @@ export default function Dashboard() {
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 hover:bg-gray-100 rounded transition-colors"
+                          onClick={() => addToHistory(article)}
                         >
                           <ExternalLink className="w-5 h-5 text-blue-600" />
                         </a>

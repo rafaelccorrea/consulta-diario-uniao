@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,61 +11,27 @@ import {
   Download,
   Clock,
 } from "lucide-react";
-import { trpc } from "@/lib/trpc";
+import { useHistoryStorage } from "@/hooks/useHistoryStorage";
 
 const ITEMS_PER_PAGE = 10;
 
-interface HistoryItem {
-  id: string;
-  articleId: number;
-  title: string;
-  section: string;
-  date: string;
-  url: string;
-  summary: string;
-  viewedAt: Date;
-}
-
 export default function History() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const { history, removeFromHistory, clearHistory } = useHistoryStorage();
 
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   const totalPages = Math.ceil(history.length / ITEMS_PER_PAGE);
   const paginatedHistory = history.slice(offset, offset + ITEMS_PER_PAGE);
 
-  // Fetch all articles to show as history (for demo)
-  const articlesQuery = trpc.articles.list.useQuery({
-    limit: 100,
-    offset: 0,
-  });
-
-  // Initialize history from articles (demo mode)
-  useEffect(() => {
-    if (articlesQuery.data?.data) {
-      const historyItems = articlesQuery.data.data.map((article, index) => ({
-        id: `history-${article.id}`,
-        articleId: article.id,
-        title: article.title,
-        section: article.section || "",
-        date: article.date || "",
-        url: article.url || "",
-        summary: article.summary || "",
-        viewedAt: new Date(Date.now() - index * 3600000), // Each 1 hour apart
-      }));
-      setHistory(historyItems);
-    }
-  }, [articlesQuery.data?.data]);
-
   const handleRemoveHistory = (id: string) => {
-    setHistory(history.filter((h) => h.id !== id));
+    removeFromHistory(id);
     if (paginatedHistory.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
   const handleClearHistory = () => {
-    setHistory([]);
+    clearHistory();
     setCurrentPage(1);
   };
 
@@ -77,7 +43,7 @@ export default function History() {
           `"${(h.title || "").replace(/"/g, '""')}"`,
           `"${(h.section || "").replace(/"/g, '""')}"`,
           h.date || "",
-          h.viewedAt.toLocaleString("pt-BR"),
+          new Date(h.viewedAt).toLocaleString("pt-BR"),
           h.url || "",
         ]);
 
@@ -173,7 +139,7 @@ export default function History() {
                       {item.section && <span>📑 {item.section}</span>}
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        {item.viewedAt.toLocaleString("pt-BR")}
+                        {new Date(item.viewedAt).toLocaleString("pt-BR")}
                       </span>
                     </div>
                   </div>
