@@ -88,6 +88,9 @@ export default function Dashboard() {
             if (item.url && item.url.startsWith("http")) {
               // Se a URL já é completa, usar como está
               fullUrl = item.url;
+            } else if (item.url) {
+              // Se a URL é relativa, adicionar domínio base
+              fullUrl = `https://www.in.gov.br/${item.url}`;
             } else if (item.classPK) {
               // Fallback para classPK
               fullUrl = `https://www.in.gov.br/consulta/-/detalhe/${item.classPK}`;
