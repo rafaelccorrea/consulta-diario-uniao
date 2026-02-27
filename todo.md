@@ -39,3 +39,9 @@
 ## Deploy
 - [ ] Salvar checkpoint final com correção de URLs
 - [ ] Entregar ao usuário
+
+## Filtro por Data
+- [x] Adicionar componente de seleção de data (data inicial e final)
+- [x] Implementar lógica de filtro por data no useArticlesStorage
+- [x] Atualizar Dashboard para exibir filtro por data
+- [x] Testar filtro com dados de exemplo

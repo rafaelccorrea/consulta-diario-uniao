@@ -26,6 +26,8 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [section, setSection] = useState("Todas");
   const [isSearching, setIsSearching] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const { addFavorite, removeFavorite, isFavorite } = useFavoritesStorage();
   const { addToHistory } = useHistoryStorage();
@@ -53,8 +55,13 @@ export default function Dashboard() {
   const sections = useMemo(() => getSections(), [getSections]);
   const stats = useMemo(() => getStats(), [getStats]);
   const filteredArticles = useMemo(
-    () => filterArticles(searchQuery, section !== "Todas" ? section : undefined),
-    [searchQuery, section, filterArticles]
+    () => filterArticles(
+      searchQuery,
+      section !== "Todas" ? section : undefined,
+      startDate || undefined,
+      endDate || undefined
+    ),
+    [searchQuery, section, startDate, endDate, filterArticles]
   );
 
   const handleSearch = async () => {
@@ -199,7 +206,8 @@ export default function Dashboard() {
         </div>
 
         {/* Search and Filter */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="md:col-span-2 relative">
             <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
@@ -214,13 +222,39 @@ export default function Dashboard() {
             onChange={(e) => setSection(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="Todas">Todas as Seções</option>
-            {sections.map((s) => (
+            <option value="Todas">Todas as Seções</option>            {sections.map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
             ))}
           </select>
+          </div>
+          
+          {/* Date Range Filter */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Data Inicio
+              </label>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Data Final
+              </label>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Stats */}
