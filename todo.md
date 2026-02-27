@@ -45,3 +45,10 @@
 - [x] Implementar lógica de filtro por data no useArticlesStorage
 - [x] Atualizar Dashboard para exibir filtro por data
 - [x] Testar filtro com dados de exemplo
+
+## Deploy Vercel
+- [x] Criar arquivo vercel.json com configurações
+- [x] Criar arquivo DEPLOY.md com instruções
+- [ ] Configurar variáveis de ambiente no Vercel
+- [ ] Fazer primeiro deploy no Vercel
+- [ ] Testar aplicação em produção
