@@ -46,6 +46,12 @@
 - [x] Atualizar Dashboard para exibir filtro por data
 - [x] Testar filtro com dados de exemplo
 
+## Remoção de Login
+- [x] Remover botão de logout do DashboardLayout
+- [x] Remover informações de usuário do header
+- [x] Remover hooks de autenticação
+- [x] Testar acesso público
+
 ## Deploy Vercel
 - [x] Criar arquivo vercel.json com configurações
 - [x] Criar arquivo DEPLOY.md com instruções

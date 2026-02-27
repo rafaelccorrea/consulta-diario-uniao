@@ -1,9 +1,8 @@
 import { ReactNode, useState } from "react";
 import { useLocation } from "wouter";
-import { Menu, X, LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { Menu, X } from "lucide-react";
+// Componentes removidos - projeto público
+// Autenticação removida - projeto público
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -19,7 +18,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [location, setLocation] = useLocation();
-  const { user, logout } = useAuth();
+  // Autenticação removida - projeto público
 
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: "📊" },
@@ -30,10 +29,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const isActive = (href: string) => location === href;
 
-  const handleLogout = async () => {
-    await logout();
-    window.location.href = getLoginUrl();
-  };
+  // Logout removido - projeto público
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -85,13 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Footer */}
         <div className="p-4 border-t border-gray-800 space-y-2">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors"
-          >
-            <LogOut className="w-5 h-5 flex-shrink-0" />
-            {sidebarOpen && <span className="text-sm">Sair</span>}
-          </button>
+          {/* Logout removido - projeto público */}
         </div>
       </aside>
 
@@ -107,17 +97,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               Acompanhe publicações em tempo real
             </p>
           </div>
-          {user && (
-            <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                <p className="text-xs text-gray-600">{user.email}</p>
-              </div>
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                {user.name?.charAt(0).toUpperCase() || "U"}
-              </div>
-            </div>
-          )}
+          {/* Informações de usuário removidas - projeto público */}
         </header>
 
         {/* Content */}
