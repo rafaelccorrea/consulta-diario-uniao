@@ -59,9 +59,10 @@ Configure as seguintes variáveis no Vercel Project Settings:
 ### 3. Configurar Build Settings
 
 O projeto já possui `vercel.json` configurado com:
-- Build Command: `pnpm build`
+- Build Command: `pnpm build` (gera o client em `public/` e o server em `dist/`)
 - Install Command: `pnpm install`
-- Framework: Vite
+
+O deploy usa o suporte **Express na Vercel** (zero-config): o arquivo `index.ts` na raiz exporta o app Express, e a Vercel o executa como serverless function. Os arquivos estáticos (SPA) ficam em `public/` e são servidos pelo CDN.
 
 ### 4. Deploy
 

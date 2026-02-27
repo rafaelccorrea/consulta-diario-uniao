@@ -1,8 +1,6 @@
 {
-  "version": 2,
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install",
-  "framework": "vite",
   "env": {
     "DATABASE_URL": "@database_url",
     "JWT_SECRET": "@jwt_secret",
@@ -17,24 +15,5 @@
     "VITE_FRONTEND_FORGE_API_URL": "@vite_frontend_forge_api_url",
     "VITE_ANALYTICS_ENDPOINT": "@vite_analytics_endpoint",
     "VITE_ANALYTICS_WEBSITE_ID": "@vite_analytics_website_id"
-  },
-  "functions": {
-    "api/**": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/trpc/(.*)",
-      "dest": "/dist/index.js"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/dist/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/client/dist/index.html"
-    }
-  ]
+  }
 }
