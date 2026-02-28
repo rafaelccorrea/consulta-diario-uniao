@@ -19,5 +19,12 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
       req.url = `/api/trpc${u.search ? u.search : ""}`;
     }
   }
-  app(req, res);
+  try {
+    app(req, res);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Server error";
+    res.setHeader("Content-Type", "application/json");
+    res.statusCode = 500;
+    res.end(JSON.stringify({ error: message }));
+  }
 }

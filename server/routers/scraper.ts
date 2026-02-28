@@ -13,6 +13,15 @@ export const scraperRouter = router({
     )
     .mutation(async ({ input }) => {
       try {
+        if (process.env.VERCEL === "1") {
+          return {
+            success: false,
+            message: "Busca no DOU não disponível neste ambiente. Use a busca local ou a página Buscar (dados do banco).",
+            results: {},
+            timestamp: new Date().toISOString(),
+          };
+        }
+
         console.log("[SCRAPER] Iniciando busca no DOU...");
 
         // Caminho para o script douScraper.cjs
