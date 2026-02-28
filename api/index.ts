@@ -1,16 +1,9 @@
 /**
- * Vercel serverless: single entry for /api. Handles /api/trpc and /api/trpc/* via
- * vercel.json rewrites. Restores req.url and passes to Express.
+ * Vercel serverless: single entry for /api.
+ * Na Vercel, scraper.runScraper é atendido aqui (fetch DOU direto) — sem Express, sem 500.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { createApp } from "../server/_core/app";
-
-let app: ReturnType<typeof createApp> | null = null;
-
-function getApp(): ReturnType<typeof createApp> {
-  if (!app) app = createApp();
-  return app;
-}
+import { fetchDouResults } from "./douFetch";
 
 function sendJson(res: ServerResponse, code: number, body: object): void {
   if (res.headersSent) return;
@@ -19,23 +12,40 @@ function sendJson(res: ServerResponse, code: number, body: object): void {
   res.end(JSON.stringify(body));
 }
 
+async function runExpress(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const { createApp } = await import("../server/_core/app");
+  const app = createApp();
+  (app as (req: IncomingMessage, res: ServerResponse) => void)(req, res);
+}
+
 export default function handler(req: IncomingMessage, res: ServerResponse): void {
-  try {
-    if (process.env.VERCEL === "1" && req.url?.startsWith("/api")) {
-      const u = new URL(req.url, "http://localhost");
-      const path = u.searchParams.get("path");
-      if (path != null) {
-        u.searchParams.delete("path");
-        const q = u.searchParams.toString();
-        req.url = `/api/trpc/${path}${q ? `?${q}` : ""}`;
-      } else if (u.pathname === "/api" && !path) {
-        req.url = `/api/trpc${u.search ? u.search : ""}`;
-      }
+  if (process.env.VERCEL === "1" && req.url?.startsWith("/api")) {
+    const u = new URL(req.url, "http://localhost");
+    let path = u.searchParams.get("path");
+    // Rewrite envia ?path=:path*; se vier URL original, extrair path do pathname
+    if (!path && u.pathname.startsWith("/api/trpc/")) {
+      const match = u.pathname.match(/^\/api\/trpc\/([^/]+)/);
+      path = match ? match[1] : null;
     }
-    const app = getApp();
-    (app as (req: IncomingMessage, res: ServerResponse) => void)(req, res);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Server error";
-    sendJson(res, 500, { error: message });
+    if (path === "scraper.runScraper") {
+      fetchDouResults()
+        .then((payload) => {
+          sendJson(res, 200, [{ result: { data: { json: payload } } }]);
+        })
+        .catch((err) => {
+          sendJson(res, 500, { error: err instanceof Error ? err.message : "Erro" });
+        });
+      return;
+    }
+    if (path != null) {
+      u.searchParams.delete("path");
+      const q = u.searchParams.toString();
+      req.url = `/api/trpc/${path}${q ? `?${q}` : ""}`;
+    } else if (u.pathname === "/api" && !path) {
+      req.url = `/api/trpc${u.search ? u.search : ""}`;
+    }
   }
+  runExpress(req, res).catch((err) => {
+    sendJson(res, 500, { error: err instanceof Error ? err.message : "Server error" });
+  });
 }
