@@ -23,8 +23,12 @@ async function fetchDouPage(keyword: string): Promise<Array<Record<string, unkno
   );
   const m = html.match(re);
   if (!m || !m[1]) return [];
-  const data = JSON.parse(m[1].trim()) as { jsonArray?: Array<Record<string, unknown>> };
-  return data.jsonArray || [];
+  try {
+    const data = JSON.parse(m[1].trim()) as { jsonArray?: Array<Record<string, unknown>> };
+    return data.jsonArray || [];
+  } catch {
+    return [];
+  }
 }
 
 function buildItem(c: Record<string, unknown>): Record<string, unknown> {
