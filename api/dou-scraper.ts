@@ -1,10 +1,10 @@
 /**
  * Rota dedicada só para o scraper DOU. Invocada diretamente pela Vercel (rewrite de
- * /api/trpc/scraper.runScraper). Não carrega Express — evita 500 e resposta HTML.
+ * /api/trpc/scraper.runScraper). Não carrega Express nem superjson — evita crash no cold start.
+ *
+ * O tRPC client com superjson aceita { json: data } sem campo meta quando não há tipos especiais.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
-import superjson from "superjson";
-import { fetchDouResults } from "./douFetch";
 
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -38,10 +38,11 @@ export default async function handler(
   try {
     const body = await readBody(req);
     const keywords = extractKeywords(body);
+    const { fetchDouResults } = await import("./douFetch");
     const payload = await fetchDouResults(keywords);
-    const serialized = superjson.serialize(payload);
     res.statusCode = 200;
-    res.end(JSON.stringify([{ result: { data: serialized } }]));
+    // superjson no cliente aceita { json: payload } quando não há tipos especiais (Date, Map, etc.)
+    res.end(JSON.stringify([{ result: { data: { json: payload } } }]));
   } catch (err) {
     res.statusCode = 500;
     res.end(

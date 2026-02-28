@@ -71,17 +71,32 @@ export default function Dashboard() {
     try {
       toast.info("Buscando publicações no Diário Oficial da União...");
 
-      // Em produção (Vercel) tentar primeiro o endpoint REST simples para evitar 500 do tRPC
       let result: { success?: boolean; message?: string; results?: Record<string, unknown[]> } | null = null;
+
+      // Tentar endpoint REST direto primeiro (sem tRPC/Express)
       try {
         const r = await fetch("/api/dou-buscar", { credentials: "include" });
-        if (r.ok) result = await r.json();
+        if (r.ok) {
+          result = await r.json();
+        }
       } catch {
-        // ignore
+        // ignore erros de rede
       }
+
+      // Fallback: tRPC (funciona em ambiente local/dev)
       if (!result?.results) {
-        result = await scraperMutation.mutateAsync({});
+        try {
+          result = await scraperMutation.mutateAsync({});
+        } catch {
+          // ignore — tratado abaixo
+        }
       }
+
+      if (!result) {
+        toast.error("Não foi possível conectar ao servidor. Tente novamente em instantes.");
+        return;
+      }
+
       console.log("Resultado do scraper:", result);
 
       if (result?.success === false && result?.message) {
