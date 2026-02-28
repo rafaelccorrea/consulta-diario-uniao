@@ -79,6 +79,37 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
       return;
     }
 
+    // Cliente pode enviar POST /api/trpc?batch=1 (rewrite → /api?batch=1) com procedure no body
+    if (!path && u.pathname === "/api" && req.method === "POST" && u.searchParams.has("batch")) {
+      readBody(req)
+        .then((body) => {
+          let isSingleBatch = false;
+          try {
+            const parsed = JSON.parse(body || "[]");
+            isSingleBatch = Array.isArray(parsed) && parsed.length === 1;
+          } catch {
+            // ignore
+          }
+          if (!isSingleBatch) {
+            sendJson(res, 400, { error: "Batch format not supported here" });
+            return;
+          }
+          const keywords = extractKeywords(body);
+          return fetchDouResults(keywords);
+        })
+        .then((payload) => {
+          if (res.headersSent) return;
+          const serialized = superjson.serialize(payload);
+          sendJson(res, 200, [{ result: { data: serialized } }]);
+        })
+        .catch((err) => {
+          if (!res.headersSent) {
+            sendJson(res, 500, { error: err instanceof Error ? err.message : "Erro na busca DOU" });
+          }
+        });
+      return;
+    }
+
     // Normalizar URL para o middleware do Express
     if (path != null) {
       u.searchParams.delete("path");
