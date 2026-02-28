@@ -75,6 +75,11 @@ export default function Dashboard() {
       const result = await scraperMutation.mutateAsync({});
       console.log("Resultado do scraper:", result);
 
+      if (result?.success === false && result?.message) {
+        toast.info(result.message);
+        return;
+      }
+
       // Processar resultados do scraper
       if (result?.results) {
         const results = result.results;

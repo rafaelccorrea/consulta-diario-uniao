@@ -27,6 +27,12 @@ export function createApp(): Express {
     })
   );
 
+  app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    if (res.headersSent) return;
+    const message = err instanceof Error ? err.message : "Server error";
+    res.status(500).setHeader("Content-Type", "application/json").end(JSON.stringify({ error: message }));
+  });
+
   if (process.env.VERCEL === "1") {
     // Vercel: only API routes here. Frontend (/) is served from public/ via vercel.json outputDirectory.
   } else if (process.env.NODE_ENV === "production") {

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { execSync } from "child_process";
 import path from "path";
 import fs from "fs";
+import { getResultsFromDou } from "../douScraperServer";
 
 export const scraperRouter = router({
   runScraper: publicProcedure
@@ -14,10 +15,12 @@ export const scraperRouter = router({
     .mutation(async ({ input }) => {
       try {
         if (process.env.VERCEL === "1") {
+          const keywords = input.keywords?.length ? input.keywords : ["previdencia social"];
+          const results = await getResultsFromDou(keywords);
           return {
-            success: false,
-            message: "Busca no DOU não disponível neste ambiente. Use a busca local ou a página Buscar (dados do banco).",
-            results: {},
+            success: true,
+            message: "Busca concluída (Vercel)",
+            results,
             timestamp: new Date().toISOString(),
           };
         }
