@@ -5,6 +5,7 @@
   "framework": null,
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/api/trpc/scraper.runScraper", "destination": "/api/dou-scraper" },
     { "source": "/api/trpc", "destination": "/api" },
     { "source": "/api/trpc/:path*", "destination": "/api?path=:path*" },
     { "source": "/((?!api/)(?!assets/).*)", "destination": "/index.html" }

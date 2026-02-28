@@ -1,29 +1,42 @@
-import express from "express";
+import "dotenv/config";
 import { createServer } from "http";
-import path from "path";
-import { fileURLToPath } from "url";
+import net from "net";
+import { createApp } from "./app";
+import { setupVite } from "./vite";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const server = net.createServer();
+    server.listen(port, () => {
+      server.close(() => resolve(true));
+    });
+    server.on("error", () => resolve(false));
+  });
+}
+
+async function findAvailablePort(startPort: number = 3000): Promise<number> {
+  for (let port = startPort; port < startPort + 20; port++) {
+    if (await isPortAvailable(port)) {
+      return port;
+    }
+  }
+  throw new Error(`No available port found starting from ${startPort}`);
+}
 
 async function startServer() {
-  const app = express();
+  const app = createApp();
   const server = createServer(app);
 
-  // Serve static files from dist/public in production
-  const staticPath =
-    process.env.NODE_ENV === "production"
-      ? path.resolve(__dirname, "public")
-      : path.resolve(__dirname, "..", "dist", "public");
+  if (process.env.NODE_ENV === "development") {
+    await setupVite(app, server);
+  }
 
-  app.use(express.static(staticPath));
+  const preferredPort = parseInt(process.env.PORT || "3000");
+  const port = await findAvailablePort(preferredPort);
 
-  // Handle client-side routing - serve index.html for all routes
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(staticPath, "index.html"));
-  });
-
-  const port = process.env.PORT || 3000;
+  if (port !== preferredPort) {
+    console.log(`Port ${preferredPort} is busy, using port ${port} instead`);
+  }
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);

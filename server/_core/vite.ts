@@ -7,12 +7,6 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
 
-type ExpressApp = Express & { use: (pathOrHandler: string | unknown, handler?: unknown) => void };
-type ReqWithUrl = Request & { originalUrl: string };
-type ResWithStatus = Response & { status: (n: number) => Response; set: (h: object) => Response; end: (s: string) => void };
-type ResWithSendFile = Response & { sendFile: (p: string) => void };
-type NextFn = (err?: unknown) => void;
-
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
@@ -27,8 +21,8 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
-  (app as ExpressApp).use(vite.middlewares);
-  (app as ExpressApp).use("*", async (req: ReqWithUrl, res: ResWithStatus, next: NextFunction) => {
+  app.use(vite.middlewares);
+  app.use("*", async (req: Request, res: Response, next: NextFunction) => {
     const url = req.originalUrl;
 
     try {
@@ -46,10 +40,10 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
-      ((res as unknown) as { status: (n: number) => { set: (h: object) => { end: (s: string) => void } } }).status(200).set({ "Content-Type": "text/html" }).end(page);
+      res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
-      (next as NextFn)(e);
+      next(e);
     }
   });
 }
@@ -65,8 +59,8 @@ export function serveStatic(app: Express) {
     );
   }
 
-  (app as ExpressApp).use(express.static(distPath));
-  (app as ExpressApp).use("*", (_req: Request, res: ResWithSendFile) => {
+  app.use(express.static(distPath));
+  app.use("*", (_req: Request, res: Response) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }

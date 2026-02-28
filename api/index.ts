@@ -5,7 +5,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { fetchDouResults } from "./douFetch";
 
-function sendJson(res: ServerResponse, code: number, body: object): void {
+function sendJson(res: ServerResponse, code: number, body: any): void {
   if (res.headersSent) return;
   res.statusCode = code;
   res.setHeader("Content-Type", "application/json");
@@ -13,30 +13,45 @@ function sendJson(res: ServerResponse, code: number, body: object): void {
 }
 
 async function runExpress(req: IncomingMessage, res: ServerResponse): Promise<void> {
-  const { createApp } = await import("../server/_core/app");
-  const app = createApp();
-  (app as (req: IncomingMessage, res: ServerResponse) => void)(req, res);
+  try {
+    const { createApp } = await import("../server/_core/app");
+    const app = createApp();
+    (app as any)(req, res);
+  } catch (err) {
+    console.error("Error loading Express app:", err);
+    sendJson(res, 500, { 
+      error: "Failed to load server", 
+      details: err instanceof Error ? err.message : String(err) 
+    });
+  }
 }
 
 export default function handler(req: IncomingMessage, res: ServerResponse): void {
-  if (process.env.VERCEL === "1" && req.url?.startsWith("/api")) {
-    const u = new URL(req.url, "http://localhost");
+  const url = req.url || "/";
+  
+  if (process.env.VERCEL === "1" && url.startsWith("/api")) {
+    const u = new URL(url, "http://localhost");
     let path = u.searchParams.get("path");
+    
     // Rewrite envia ?path=:path*; se vier URL original, extrair path do pathname
     if (!path && u.pathname.startsWith("/api/trpc/")) {
       const match = u.pathname.match(/^\/api\/trpc\/([^/]+)/);
       path = match ? match[1] : null;
     }
+
     if (path === "scraper.runScraper") {
       fetchDouResults()
         .then((payload) => {
+          // Formato esperado pelo tRPC client
           sendJson(res, 200, [{ result: { data: { json: payload } } }]);
         })
         .catch((err) => {
-          sendJson(res, 500, { error: err instanceof Error ? err.message : "Erro" });
+          sendJson(res, 500, { error: err instanceof Error ? err.message : "Erro na busca DOU" });
         });
       return;
     }
+
+    // Normalizar URL para o middleware do Express
     if (path != null) {
       u.searchParams.delete("path");
       const q = u.searchParams.toString();
@@ -45,6 +60,7 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
       req.url = `/api/trpc${u.search ? u.search : ""}`;
     }
   }
+
   runExpress(req, res).catch((err) => {
     sendJson(res, 500, { error: err instanceof Error ? err.message : "Server error" });
   });
