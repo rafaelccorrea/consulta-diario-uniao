@@ -70,7 +70,8 @@ export async function getResultsFromDou(keywords: string[] = DEFAULT_KEYWORDS): 
       const scriptTag = $('script#_br_com_seatecnologia_in_buscadou_BuscaDouPortlet_params');
       if (!scriptTag.length || !scriptTag.html()) continue;
 
-      const data = JSON.parse(scriptTag.html()) as { jsonArray?: Array<Record<string, unknown>> };
+      const scriptHtml = scriptTag.html() ?? "";
+      const data = JSON.parse(scriptHtml) as { jsonArray?: Array<Record<string, unknown>> };
       const searchResults = data.jsonArray || [];
 
       for (const content of searchResults) {

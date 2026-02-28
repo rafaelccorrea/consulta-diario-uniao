@@ -5,17 +5,19 @@ import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
 
 function getQueryParam(req: Request, key: string): string | undefined {
-  const value = req.query[key];
+  const q = (req as Request & { query?: Record<string, string | string[]> }).query;
+  const value = q?.[key];
   return typeof value === "string" ? value : undefined;
 }
 
 export function registerOAuthRoutes(app: Express) {
-  app.get("/api/oauth/callback", async (req: Request, res: Response) => {
+  (app as Express & { get: (path: string, handler: (req: Request, res: Response) => Promise<void>) => void }).get("/api/oauth/callback", async (req: Request, res: Response) => {
     const code = getQueryParam(req, "code");
     const state = getQueryParam(req, "state");
 
+    const resSend = res as unknown as { status: (n: number) => { json: (o: object) => void }; cookie: (name: string, val: string, opts: object) => void; redirect: (n: number, u: string) => void };
     if (!code || !state) {
-      res.status(400).json({ error: "code and state are required" });
+      resSend.status(400).json({ error: "code and state are required" });
       return;
     }
 
@@ -42,12 +44,11 @@ export function registerOAuthRoutes(app: Express) {
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
-      res.redirect(302, "/");
+      resSend.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      resSend.redirect(302, "/");
     } catch (error) {
       console.error("[OAuth] Callback failed", error);
-      res.status(500).json({ error: "OAuth callback failed" });
+      resSend.status(500).json({ error: "OAuth callback failed" });
     }
   });
 }

@@ -32,7 +32,8 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
         req.url = `/api/trpc${u.search ? u.search : ""}`;
       }
     }
-    getApp()(req, res);
+    const app = getApp();
+    (app as (req: IncomingMessage, res: ServerResponse) => void)(req, res);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Server error";
     sendJson(res, 500, { error: message });
