@@ -1,10 +1,16 @@
-import express, { type Express, type Request, type Response, type NextFunction } from "express";
+import express from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import fs from "fs";
 import { type Server } from "http";
 import { nanoid } from "nanoid";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import viteConfig from "../../vite.config";
+
+type ExpressApp = Express & { use: (h: unknown) => void };
+type ReqWithUrl = Request & { originalUrl: string };
+type ResWithStatus = Response & { status: (n: number) => Response; set: (h: object) => Response; end: (s: string) => void };
+type ResWithSendFile = Response & { sendFile: (p: string) => void };
 
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
@@ -20,8 +26,8 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
-  app.use(vite.middlewares);
-  app.use("*", async (req: Request, res: Response, next: NextFunction) => {
+  (app as ExpressApp).use(vite.middlewares);
+  (app as ExpressApp).use("*", async (req: ReqWithUrl, res: ResWithStatus, next: NextFunction) => {
     const url = req.originalUrl;
 
     try {
@@ -39,7 +45,7 @@ export async function setupVite(app: Express, server: Server) {
         `src="/src/main.tsx?v=${nanoid()}"`
       );
       const page = await vite.transformIndexHtml(url, template);
-      res.status(200).set({ "Content-Type": "text/html" }).end(page);
+      (res as ResWithStatus).status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
       vite.ssrFixStacktrace(e as Error);
       next(e);
@@ -58,8 +64,8 @@ export function serveStatic(app: Express) {
     );
   }
 
-  app.use(express.static(distPath));
-  app.use("*", (_req: Request, res: Response) => {
+  (app as ExpressApp).use(express.static(distPath));
+  (app as ExpressApp).use("*", (_req: Request, res: ResWithSendFile) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
