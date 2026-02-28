@@ -3,6 +3,7 @@
  * Na Vercel, scraper.runScraper é atendido aqui (fetch DOU direto) — sem Express, sem 500.
  */
 import type { IncomingMessage, ServerResponse } from "node:http";
+import superjson from "superjson";
 import { fetchDouResults } from "./douFetch";
 
 function sendJson(res: ServerResponse, code: number, body: any): void {
@@ -10,6 +11,29 @@ function sendJson(res: ServerResponse, code: number, body: any): void {
   res.statusCode = code;
   res.setHeader("Content-Type", "application/json");
   res.end(JSON.stringify(body));
+}
+
+function readBody(req: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    req.on("data", (chunk: Buffer) => { data += chunk.toString(); });
+    req.on("end", () => resolve(data));
+    req.on("error", reject);
+  });
+}
+
+function extractKeywords(body: string): string[] | undefined {
+  try {
+    const parsed = JSON.parse(body);
+    const first = Array.isArray(parsed) ? parsed[0] : parsed;
+    const input = first?.["0"]?.json ?? first?.json;
+    if (input?.keywords && Array.isArray(input.keywords) && input.keywords.length > 0) {
+      return input.keywords as string[];
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return undefined;
 }
 
 async function runExpress(req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -40,10 +64,14 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
     }
 
     if (path === "scraper.runScraper") {
-      fetchDouResults()
+      readBody(req)
+        .then((body) => {
+          const keywords = extractKeywords(body);
+          return fetchDouResults(keywords);
+        })
         .then((payload) => {
-          // Formato esperado pelo tRPC client
-          sendJson(res, 200, [{ result: { data: { json: payload } } }]);
+          const serialized = superjson.serialize(payload);
+          sendJson(res, 200, [{ result: { data: serialized } }]);
         })
         .catch((err) => {
           sendJson(res, 500, { error: err instanceof Error ? err.message : "Erro na busca DOU" });

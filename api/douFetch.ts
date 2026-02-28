@@ -7,7 +7,14 @@ const SCRIPT_ID = "_br_com_seatecnologia_in_buscadou_BuscaDouPortlet_params";
 
 async function fetchDouPage(keyword: string): Promise<Array<Record<string, unknown>>> {
   const url = `${DOU_URL}?q=${encodeURIComponent('"' + keyword + '"')}&s=todos&exactDate=dia&sortType=1`;
-  const res = await fetch(url, { method: "GET", headers: { "User-Agent": UA } });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+  let res: Response;
+  try {
+    res = await fetch(url, { method: "GET", headers: { "User-Agent": UA }, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
   if (!res.ok) return [];
   const html = await res.text();
   const re = new RegExp(
