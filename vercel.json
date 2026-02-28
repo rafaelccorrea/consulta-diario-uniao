@@ -5,6 +5,8 @@
   "framework": null,
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/api/trpc", "destination": "/api" },
+    { "source": "/api/trpc/:path*", "destination": "/api" },
     { "source": "/((?!api/)(?!assets/).*)", "destination": "/index.html" }
   ]
 }
