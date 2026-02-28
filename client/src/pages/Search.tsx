@@ -14,6 +14,8 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { normalizeDouUrl } from "@/lib/douUrl";
+import { stripHtml } from "@/lib/stripHtml";
 import { trpc } from "@/lib/trpc";
 
 const ITEMS_PER_PAGE = 10;
@@ -106,23 +108,22 @@ export default function Search() {
               Buscar Artigos
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2 relative">
-                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+              <div className="sm:col-span-2 relative">
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
                 <Input
                   type="text"
-                  placeholder="Buscar por palavras-chave, seção, número..."
+                  placeholder="Ex.: previdência, licitação, portaria..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                  className="pl-10"
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                  className="pl-10 w-full min-h-[44px] sm:min-h-0"
                 />
               </div>
-
               <Button
                 onClick={handleSearch}
                 disabled={articlesQuery.isLoading}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
               >
                 {articlesQuery.isLoading ? (
                   <>
@@ -136,7 +137,7 @@ export default function Search() {
             </div>
 
             {/* Advanced Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 pt-4 border-t">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-4 border-t">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
                   Seção
@@ -201,11 +202,11 @@ export default function Search() {
 
         {/* ===== RESULTS ===== */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-lg font-semibold text-gray-900">
-              Resultados ({articlesQuery.data?.total || 0})
+              Resultados ({articlesQuery.data?.total ?? 0})
             </h2>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <Button
                 onClick={() => handleExport("csv")}
                 variant="outline"
@@ -227,26 +228,41 @@ export default function Search() {
             </div>
           </div>
 
+          {/* Error State */}
+          {articlesQuery.isError && (
+            <Card className="p-6 sm:p-8 text-center border-red-200 bg-red-50/50 rounded-xl">
+              <p className="text-red-700 font-medium mb-2">Não foi possível carregar.</p>
+              <p className="text-sm text-gray-600 mb-4">Verifique sua internet e tente de novo.</p>
+              <Button
+                onClick={() => articlesQuery.refetch()}
+                variant="outline"
+                className="min-h-[48px] px-6 border-red-300 text-red-700 rounded-xl"
+              >
+                Tentar novamente
+              </Button>
+            </Card>
+          )}
+
           {/* Loading State */}
-          {articlesQuery.isLoading ? (
+          {!articlesQuery.isError && articlesQuery.isLoading ? (
             <Card className="p-12 text-center">
               <Loader2 className="w-8 h-8 text-blue-600 mx-auto mb-4 animate-spin" />
               <p className="text-gray-600">Carregando artigos...</p>
             </Card>
-          ) : articlesQuery.data?.data && articlesQuery.data.data.length > 0 ? (
-            <div className="space-y-3">
+          ) : !articlesQuery.isError && articlesQuery.data?.data && articlesQuery.data.data.length > 0 ? (
+            <div className="space-y-3 sm:space-y-4">
               {articlesQuery.data.data.map((article) => (
                 <Card
                   key={article.id}
-                  className="p-4 hover:shadow-md transition-shadow"
+                  className="p-4 sm:p-4 rounded-xl hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start justify-between gap-4">
+                  <div className="flex flex-col gap-3">
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
-                        {article.title}
+                        {stripHtml(article.title)}
                       </h3>
                       <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                        {article.summary}
+                        {stripHtml(article.summary)}
                       </p>
                       <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                         {article.date && <span>📅 {article.date}</span>}
@@ -255,12 +271,13 @@ export default function Search() {
                     </div>
                     {article.url && (
                       <a
-                        href={article.url}
+                        href={normalizeDouUrl(article.url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-shrink-0 p-2 hover:bg-gray-100 rounded transition-colors"
+                        className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:scale-[0.98] w-fit"
                       >
-                        <ExternalLink className="w-5 h-5 text-blue-600" />
+                        <ExternalLink className="w-4 h-4" />
+                        Ver no DOU
                       </a>
                     )}
                   </div>
@@ -268,7 +285,7 @@ export default function Search() {
               ))}
 
               {/* Pagination */}
-              <div className="flex items-center justify-center gap-2 pt-4">
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
                 <Button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}

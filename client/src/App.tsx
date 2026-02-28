@@ -1,30 +1,29 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Search from "./pages/Search";
 import Favorites from "./pages/Favorites";
 import History from "./pages/History";
 
 function Router() {
-  // Redirect root to dashboard
-  if (typeof window !== 'undefined' && window.location.pathname === '/') {
-    window.location.pathname = '/dashboard';
-  }
+  const [location, setLocation] = useLocation();
 
-  // make sure to consider if you need authentication for certain routes
+  useEffect(() => {
+    if (location === "/") setLocation("/dashboard");
+  }, [location, setLocation]);
+
   return (
     <Switch>
-      <Route path={"/dashboard"} component={Dashboard} />
-      <Route path={"/search"} component={Search} />
-      <Route path={"/favorites"} component={Favorites} />
-      <Route path={"/history"} component={History} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/search" component={Search} />
+      <Route path="/favorites" component={Favorites} />
+      <Route path="/history" component={History} />
+      <Route path="/404" component={NotFound} />
       <Route component={Dashboard} />
     </Switch>
   );

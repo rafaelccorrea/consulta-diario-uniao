@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, ExternalLink } from "lucide-react";
+import { normalizeDouUrl } from "@/lib/douUrl";
+import { stripHtml } from "@/lib/stripHtml";
 
 interface ArticleCardProps {
   title: string;
@@ -25,6 +27,8 @@ export default function ArticleCard({
   summary,
   url,
 }: ArticleCardProps) {
+  const safeTitle = stripHtml(title);
+  const safeSummary = stripHtml(summary);
   return (
     <Card className="group relative overflow-hidden bg-white p-6 hover:shadow-lg transition-all duration-200 border border-gray-100">
       {/* Background accent on hover */}
@@ -34,7 +38,7 @@ export default function ArticleCard({
         {/* Header with badge */}
         <div className="flex items-start justify-between mb-3">
           <h3 className="flex-1 text-lg font-bold text-gray-900 leading-tight pr-2 group-hover:text-blue-600 transition-colors duration-200">
-            {title}
+            {safeTitle}
           </h3>
           <Badge
             className="flex-shrink-0 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
@@ -53,17 +57,17 @@ export default function ArticleCard({
 
         {/* Summary */}
         <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-          {summary}
+          {safeSummary}
         </p>
 
         {/* Footer with link */}
         <a
-          href={url}
+          href={normalizeDouUrl(url)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors duration-200 group/link"
+          className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 font-medium text-sm transition-colors duration-200 group/link active:scale-[0.98]"
         >
-          Ler artigo completo
+          Ver no DOU
           <ExternalLink className="w-4 h-4 group-hover/link:translate-x-0.5 transition-transform" />
         </a>
       </div>

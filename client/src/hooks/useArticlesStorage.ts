@@ -15,18 +15,24 @@ export interface Article {
 const STORAGE_KEY = "legalix_articles";
 const MAX_ARTICLES = 10000;
 
-// Construir URL completa do DOU
-// Agora o douScraper retorna URLs completas, então apenas usamos diretamente
+// Construir URL completa do DOU (in.gov.br exige /web/dou/-/ para slugs, senão retorna "Não encontrado")
 function buildFullUrl(urlPart: string, classPK: string): string {
   if (!urlPart && classPK) return `https://www.in.gov.br/consulta/-/detalhe/${classPK}`;
   const up = urlPart?.trim() || "";
-  // Se já é uma URL completa, retornar diretamente
-  if (up.startsWith("http")) return up;
-  // Se for um caminho relativo, adicionar o domínio
+  // URL completa: corrigir formato antigo in.gov.br/slug → in.gov.br/web/dou/-/slug
+  if (up.startsWith("http")) {
+    try {
+      const u = new URL(up);
+      if (u.origin === "https://www.in.gov.br" && u.pathname !== "/" && !u.pathname.startsWith("/web/") && !u.pathname.startsWith("/consulta/") && u.pathname.includes("-")) {
+        return `https://www.in.gov.br/web/dou/-${u.pathname}`;
+      }
+      return up;
+    } catch {
+      return up;
+    }
+  }
   if (up.startsWith("/")) return "https://www.in.gov.br" + up;
-  // Se for um slug sem domínio, adicionar o prefixo completo
   if (up.includes("-")) return `https://www.in.gov.br/web/dou/-/${up}`;
-  // Fallback para classPK
   return classPK ? `https://www.in.gov.br/consulta/-/detalhe/${classPK}` : "https://www.in.gov.br";
 }
 

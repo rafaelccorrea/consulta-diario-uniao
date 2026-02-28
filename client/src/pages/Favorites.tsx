@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useLocation } from "wouter";
 import {
   ExternalLink,
   FileText,
@@ -9,14 +10,19 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
+  Star,
 } from "lucide-react";
 import { useArticlesStorage } from "@/hooks/useArticlesStorage";
 import { useFavoritesStorage } from "@/hooks/useFavoritesStorage";
+import { normalizeDouUrl } from "@/lib/douUrl";
+import { stripHtml } from "@/lib/stripHtml";
+import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function Favorites() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [, setLocation] = useLocation();
   const { articles } = useArticlesStorage();
   const { favorites, removeFavorite } = useFavoritesStorage();
 
@@ -62,6 +68,7 @@ export default function Favorites() {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        toast.success("Planilha baixada! Verifique a pasta de Downloads.");
       } else {
         const json = JSON.stringify(paginatedFavorites, null, 2);
         const blob = new Blob([json], { type: "application/json" });
@@ -73,9 +80,11 @@ export default function Favorites() {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
+        toast.success("Arquivo JSON baixado! Verifique a pasta de Downloads.");
       }
     } catch (error) {
       console.error("Erro ao exportar:", error);
+      toast.error("Não foi possível exportar. Tente novamente.");
     }
   };
 
@@ -83,14 +92,14 @@ export default function Favorites() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* ===== HEADER ===== */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Favoritos</h2>
-            <p className="text-gray-600">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Favoritos</h2>
+            <p className="text-gray-600 text-sm sm:text-base">
               Total de {favoriteArticles.length} artigo(s) favorito(s)
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               onClick={() => handleExport("csv")}
               variant="outline"
@@ -118,35 +127,38 @@ export default function Favorites() {
             {paginatedFavorites.map((article) => (
               <Card
                 key={article.id}
-                className="p-4 hover:shadow-md transition-shadow border-l-4 border-l-blue-600"
+                className="p-4 sm:p-4 rounded-xl hover:shadow-md transition-shadow border-l-4 border-l-blue-600"
               >
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
-                      {article.title}
+                      {stripHtml(article.title)}
                     </h3>
                     <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                      {article.summary}
+                      {stripHtml(article.summary)}
                     </p>
                     <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                       {article.date && <span>📅 {article.date}</span>}
                       {article.section && <span>📑 {article.section}</span>}
                     </div>
                   </div>
-                  <div className="flex-shrink-0 flex gap-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:flex-shrink-0">
                     {article.url && (
                       <a
-                        href={article.url}
+                        href={normalizeDouUrl(article.url)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 hover:bg-gray-100 rounded transition-colors"
+                        className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:scale-[0.98]"
                       >
-                        <ExternalLink className="w-5 h-5 text-blue-600" />
+                        <ExternalLink className="w-4 h-4" />
+                        Ver no DOU
                       </a>
                     )}
                     <button
+                      type="button"
                       onClick={() => handleRemoveFavorite(article.id)}
-                      className="p-2 hover:bg-red-100 rounded transition-colors"
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-red-100 active:bg-red-200 transition-colors"
+                      aria-label="Remover dos favoritos"
                     >
                       <Trash2 className="w-5 h-5 text-red-600" />
                     </button>
@@ -157,7 +169,7 @@ export default function Favorites() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-4">
+              <div className="flex flex-wrap items-center justify-center gap-2 pt-4">
                 <Button
                   onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
@@ -221,15 +233,20 @@ export default function Favorites() {
             </div>
           </div>
         ) : (
-          <Card className="p-12 text-center">
-            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-600 mb-2">
-              Nenhum favorito
+          <Card className="p-8 sm:p-12 text-center border-2 border-dashed border-gray-200 bg-gray-50/50">
+            <Star className="w-14 h-14 sm:w-16 sm:h-16 text-amber-200 mx-auto mb-4" aria-hidden />
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
+              Nenhum favorito ainda
             </h3>
-            <p className="text-gray-500 max-w-md mx-auto">
-              Você ainda não adicionou nenhum artigo aos favoritos. Vá para a
-              página de busca e clique no ícone de estrela para adicionar.
+            <p className="text-gray-600 max-w-md mx-auto mb-6 text-sm sm:text-base">
+              Toque na estrela em qualquer publicação na página <strong>Início</strong> para salvar aqui.
             </p>
+            <Button
+              onClick={() => setLocation("/dashboard")}
+              className="min-h-[48px] px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
+            >
+              Ir para Início
+            </Button>
           </Card>
         )}
       </div>
