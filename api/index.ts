@@ -69,7 +69,7 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
           return fetchDouResults(keywords);
         })
         .then((payload) => {
-          sendJson(res, 200, [{ result: { data: { json: payload } } }]);
+          sendJson(res, 200, [{ result: { data: payload } }]);
         })
         .catch((err) => {
           sendJson(res, 500, { error: err instanceof Error ? err.message : "Erro na busca DOU" });
@@ -87,7 +87,7 @@ export default function handler(req: IncomingMessage, res: ServerResponse): void
         })
         .then((payload) => {
           if (res.headersSent) return;
-          sendJson(res, 200, [{ result: { data: { json: payload } } }]);
+          sendJson(res, 200, [{ result: { data: payload } }]);
         })
         .catch((err) => {
           if (!res.headersSent) {

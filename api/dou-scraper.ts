@@ -41,8 +41,7 @@ export default async function handler(
     const { fetchDouResults } = await import("./douFetch");
     const payload = await fetchDouResults(keywords);
     res.statusCode = 200;
-    // superjson no cliente aceita { json: payload } quando não há tipos especiais (Date, Map, etc.)
-    res.end(JSON.stringify([{ result: { data: { json: payload } } }]));
+    res.end(JSON.stringify([{ result: { data: payload } }]));
   } catch (err) {
     res.statusCode = 500;
     res.end(
