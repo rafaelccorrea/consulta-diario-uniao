@@ -22,6 +22,7 @@ import { normalizeDouUrl } from "@/lib/douUrl";
 import { stripHtml } from "@/lib/stripHtml";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { fetchDouResultsClient } from "@/lib/douClient";
 import { useState, useEffect, useMemo } from "react";
 
 export default function Dashboard() {
@@ -73,22 +74,29 @@ export default function Dashboard() {
 
       let result: { success?: boolean; message?: string; results?: Record<string, unknown[]> } | null = null;
 
-      // Tentar endpoint REST direto primeiro (sem tRPC/Express)
+      // 1ª opção: fetch direto do browser (evita bloqueio de IP de datacenter)
       try {
-        const r = await fetch("/api/dou-buscar", { credentials: "include" });
-        if (r.ok) {
-          result = await r.json();
-        }
+        result = await fetchDouResultsClient();
       } catch {
-        // ignore erros de rede
+        // ignore — tenta fallback
       }
 
-      // Fallback: tRPC (funciona em ambiente local/dev)
-      if (!result?.results) {
+      // 2ª opção: API server-side (funciona em dev local)
+      if (!result?.results || Object.values(result.results).every((v) => v.length === 0)) {
+        try {
+          const r = await fetch("/api/dou-buscar", { credentials: "include" });
+          if (r.ok) result = await r.json();
+        } catch {
+          // ignore
+        }
+      }
+
+      // 3ª opção: tRPC (dev local com Express)
+      if (!result?.results || Object.values(result.results).every((v) => v.length === 0)) {
         try {
           result = await scraperMutation.mutateAsync({});
         } catch {
-          // ignore — tratado abaixo
+          // ignore
         }
       }
 
