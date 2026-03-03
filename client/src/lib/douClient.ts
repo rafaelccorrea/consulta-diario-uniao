@@ -23,13 +23,7 @@ export type DouResults = {
   timestamp: string;
 };
 
-async function fetchDouPage(keyword: string): Promise<DouItem[]> {
-  const url = `${DOU_URL}?q=${encodeURIComponent('"' + keyword + '"')}&s=todos&exactDate=dia&sortType=1`;
-
-  const res = await fetch(url, { method: "GET" });
-  if (!res.ok) return [];
-
-  const html = await res.text();
+function parseScriptJson(html: string): DouItem[] {
   const re = new RegExp(
     '<script[^>]*id="' + SCRIPT_ID.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '"[^>]*>([\\s\\S]*?)</script>',
     "i"
@@ -63,6 +57,23 @@ async function fetchDouPage(keyword: string): Promise<DouItem[]> {
       displayDateSortable: c.displayDateSortable,
     };
   });
+}
+
+async function fetchDouPage(keyword: string): Promise<DouItem[]> {
+  // 1) Busca só do dia (exactDate=dia)
+  let url = `${DOU_URL}?q=${encodeURIComponent('"' + keyword + '"')}&s=todos&exactDate=dia&sortType=1`;
+  let res = await fetch(url, { method: "GET" });
+  if (res.ok) {
+    const html = await res.text();
+    const items = parseScriptJson(html);
+    if (items.length > 0) return items;
+  }
+  // 2) Se 0 resultados, busca sem filtro de dia (últimos dias)
+  url = `${DOU_URL}?q=${encodeURIComponent('"' + keyword + '"')}&s=todos&sortType=1`;
+  res = await fetch(url, { method: "GET" });
+  if (!res.ok) return [];
+  const html = await res.text();
+  return parseScriptJson(html);
 }
 
 export async function fetchDouResultsClient(

@@ -74,29 +74,34 @@ export default function Dashboard() {
 
       let result: { success?: boolean; message?: string; results?: Record<string, unknown[]> } | null = null;
 
-      // 1ª opção: fetch direto do browser (evita bloqueio de IP de datacenter)
+      // Em hospedagem estática (ex.: Hostinger sem Node) não existe /api — usar só o fetch do browser
+      const isStaticHost =
+        typeof window !== "undefined" &&
+        (window.location.hostname.includes("hostingersite.com") ||
+          window.location.hostname.includes("000webhost") ||
+          window.location.hostname.endsWith(".github.io"));
+
+      // 1ª opção: fetch direto do browser (funciona em produção estática e evita bloqueio)
       try {
         result = await fetchDouResultsClient();
       } catch {
-        // ignore — tenta fallback
+        // ignore — tenta fallback só se houver backend
       }
 
-      // 2ª opção: API server-side (funciona em dev local)
-      if (!result?.results || Object.values(result.results).every((v) => v.length === 0)) {
+      // 2ª e 3ª opções: só em ambiente com backend (dev local ou Vercel/Node)
+      if (!isStaticHost && (!result?.results || Object.values(result.results).every((v) => v.length === 0))) {
         try {
           const r = await fetch("/api/dou-buscar", { credentials: "include" });
           if (r.ok) result = await r.json();
         } catch {
           // ignore
         }
-      }
-
-      // 3ª opção: tRPC (dev local com Express)
-      if (!result?.results || Object.values(result.results).every((v) => v.length === 0)) {
-        try {
-          result = await scraperMutation.mutateAsync({});
-        } catch {
-          // ignore
+        if (!result?.results || Object.values(result.results).every((v) => v.length === 0)) {
+          try {
+            result = await scraperMutation.mutateAsync({});
+          } catch {
+            // ignore
+          }
         }
       }
 
